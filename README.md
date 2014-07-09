@@ -44,12 +44,15 @@ Full documentation for Buddy's services are available at [buddyplatform.com/docs
 
 We will be publishing go Maven/Gradle shortly, but in the meantime, it's easy to integrate the Buddy Android SDK into your application.
 
-** Note this process requires Gradle 1.1.  Gradle installs can be found [here](http://www.gradle.org/downloads) (see the "Previous Releases" dropdown. **
+#### Gradle 1.1 Required
+Note this process requires Gradle 1.1.  Gradle installs can be found [here](http://www.gradle.org/downloads). See the "Previous Releases" dropdown toward the bottom of the page.
+
+#### Install Process
 
 1.  Clone this repository
 2.  From the root of this repository, run `gradle build`
 3.  Look in the **library/build/libs** folder to find the JARs.
-4.  Add these JARs as dependencies for your Android application.
+4.  Add The buddy-sdk-_version_.jar file as a dependency for your Android application.
 
 ## Using the Android SDK
 
