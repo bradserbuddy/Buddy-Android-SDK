@@ -58,7 +58,7 @@ To initialize the SDK:
     import com.buddy.sdk;
     // ...
     // Create the SDK client
-    BuddyClient client = new BuddyClient(myAppId, myAppKey);
+    BuddyClient client = new BuddyClient(context, myAppId, myAppKey);
     
 There are some helper functions for creating users, logging in users, and logging out users:  
 
@@ -75,13 +75,15 @@ There are some helper functions for creating users, logging in users, and loggin
 	
 #### Standard REST requests
 	  
-The majority of the calls map directly to REST.  For all the calls you can either create a wrapper java class such as those found
-in `com.buddy.sdk.models`, or you can simply pass a type of `JsonObject` to be returned the result as a standard Gson JsonObject.
+The majority of the calls map directly to REST.  For all the calls you can either create a wrapper java class such as those found in `com.buddy.sdk.models`, or you can simply pass a type of `JsonObject` to be returned the result as a standard Gson JsonObject.
+
+In this example, we'll create a checkin so see the [Create Checkin REST documentation](http://buddyplatform.com/docs/Create%20Checkin/HTTP), then:
 	 
  	 // create a checkin
+ 	 Location location = getTheDeviceLocation();
 	 Map<String,Object> parameters = new HashMap<String,Object>();
 	 parameters.put("comment", "my first checkin");
-	 Location location = getTheDeviceLocation();
+	 parameters.put("description", "This is where I was doing that thing.");
 	 parameters.put("location", String.format("%f,%f", location.getLatitude(), location.getLongitude());
 	 client.<JsonObject>post("/checkins", parameters, new BuddyCallback<JsonObject>(JsonObject.class) {
 	    @Override
@@ -141,7 +143,7 @@ Android `File` or `InputStream`, along with a MIME content type.
 
 To upload a picture:
 
-    BuddyFile file = new BuddyFile(new File("/some/image/foo.jpg"), "image/jpg"));
+    BuddyFile file = new BuddyFile(new File("/some/image/foo.jpg"), "image/jpg");
     Map<String,Object> parameters = new HashMap<String,Object>();
     parameters.put("caption", "my first image");
     parameters.put("data", file);
