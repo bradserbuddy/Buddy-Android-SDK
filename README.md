@@ -44,6 +44,16 @@ Full documentation for Buddy's services are available at [buddyplatform.com/docs
 
 We will be publishing go Maven/Gradle shortly, but in the meantime, it's easy to integrate the Buddy Android SDK into your application.
 
+#### Prerequisites
+
+To build the SDK you need to:
+
+1.  Have installed the [Android SDK Tools](http://developer.android.com/sdk/index.html)
+2.  Set the ANDROID_HOME environment variable to the Android SDK install dir
+3.  Install Android SDK build tools version 19.1.0, and SDK Platform for API 10 (Android 2.3.3) 
+
+#### Build and Install
+
 1.  Clone this repository to your local machiine
 2.  From the root of this repository, run `./gradlew build` (Mac/Linux) or `gradlew.bat build` (Windows) to build the SDK
 3.  Look in the **library/build/libs** folder to find the JARs.
