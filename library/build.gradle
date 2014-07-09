@@ -13,12 +13,12 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 17
+    compileSdkVersion 10
     buildToolsVersion '19.1.0'
 
     defaultConfig {
         minSdkVersion 3
-        targetSdkVersion 17
+        targetSdkVersion 10
     }
 
     lintOptions {
