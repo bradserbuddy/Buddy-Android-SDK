@@ -93,9 +93,48 @@ in `com.buddy.sdk.models`, or you can simply pass a type of `JsonObject` to be r
 	        }
 	    }
 	 });
+	
+#### Creating Response Objects
+
+Creating strongly typed response objects is simple.  If the REST operation that you intend to call returns a response that's not avaialble in `com.buddy.sdk.models`, you can easily create one by creating a Java object with fields that match the JSON response fields for the operation.
+
+1.  Go to the Buddy Console and try your operation
+2.  When the operation completes, note the fields and types in the response
+3.  Create a Java class that derives from `com.buddy.sdk.models.ModelBase` with the appropriate properties.
+
+For example, if the response to **POST /checkins** looks like:
+
+
+     {
+       "status": 201,
+       "result": {
+         "comment": "h1",
+         "userID": "bv.HrcbbDkMPgfn",
+         "id": "cb.gBgbvKFkdhnp",
+         "location": {
+           "lat": 46.2,
+            "lng": -120.1
+          },
+         "created": "2014-07-09T07:07:21.463Z",
+         "lastModified": "2014-07-09T07:07:21.463Z"
+     },
+     "request_id": "53bcea29b32fad0c405372b6",
+     "success": true
+    }
+
+The corresponding Java object for _the unique fields under **result**_:
+
+    public class Checkin extends ModelBase {
+        public String comment;
+    }
+    
+Note we do not need to specify the default common properties `id`, `userID`, `location`, `created`, or `lastModified`.
+
+We can then call:
+
+     client.<Checkin>get("/checkins/" + myCheckinId, null, new BuddyCallback<Checkin>(Checkin.class){...});
 	 
-	 
-#### Managing Files.
+#### Managing Files
 
 For file uploads and downloads, the Buddy Android SDK handles this for you as well.  The key class is `com.buddy.sdk.BuddyFile`, which is a wrapper around an
 Android `File` or `InputStream`, along with a MIME content type.
