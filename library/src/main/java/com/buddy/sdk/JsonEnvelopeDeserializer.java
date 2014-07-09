@@ -43,7 +43,7 @@ class JsonEnvelopeDeserializer<T> implements JsonDeserializer<JsonEnvelope<Objec
 
         if (element.isJsonObject()) {
 
-            if (clazz != null) {
+            if (clazz != null && !JsonObject.class.isAssignableFrom(clazz)) {
                 result = gson.fromJson(element.getAsJsonObject(), clazz);
             }
             else {
