@@ -1,0 +1,48 @@
+apply plugin: 'com.android.library'
+
+
+archivesBaseName = 'buddy-sdk'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.loopj.android:android-async-http:1.4.5'
+    compile 'com.google.code.gson:gson:2.2.+'
+}
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion '19.1.0'
+
+    defaultConfig {
+        minSdkVersion 3
+        targetSdkVersion 17
+    }
+
+    lintOptions {
+        xmlReport false
+        warningsAsErrors true
+        quiet false
+        showAll true
+	disable 'OldTargetApi'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
+    }
+}
+
+
+
+android.libraryVariants.all { variant ->
+    def name = variant.buildType.name
+    def task = project.tasks.create "jar${variant.name.capitalize()}", Jar
+    task.dependsOn variant.javaCompile
+    task.from variant.javaCompile.destinationDir
+    artifacts.add('archives', task);
+}
+
+apply from: '../maven_push.gradle'
