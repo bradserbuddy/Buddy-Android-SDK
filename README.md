@@ -48,10 +48,11 @@ In your build.gradle file under 'src', add a line for the Buddy Android SDK depe
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    **Compile 'com.buddy:androidsdk:0.1.+'**
+    **Compile 'com.buddy:androidsdk:+'**
 }
 
-**NOTE: This will install the "latest" release in the 0.1 series of releases. If later versions of the SDK are released and you wish to use them, then the version string in the dependency line must be manually updated.**
+This will install the "latest" release of the Buddy Android SDK.**
+**NOTE:** If you wish to limit yourself to a narrower set of releases, you can do so like this: **Compile 'com.buddy:androidsdk:0.1.+'** (which gets the latest release in the 0.1 series)
 
 Then in your source files, you can import from com.buddy.sdk to access the Buddy Classes
 (e.g. import com.buddy.sdk.BuddyClient)
