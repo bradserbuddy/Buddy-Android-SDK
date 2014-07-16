@@ -17,26 +17,26 @@ This SDK is a thin wrapper over the Buddy REST interfaces, but takes care of the
 * Parsing responses
 * Loading and saving credentials
 
-What's left is simply making basic calls to the Buddy REST APIs.  
+All that's left is making basic calls to the Buddy REST APIs.  
 
 ## Features
 
-For developers the Buddy Platform offers turnkey support for features like the following:
+The Buddy Platform offers turnkey support for many common features, including:
 
-* *User Accounts* - create, delete, authenticate users.
-* *Photos* - add photos, search photos, share photos with other users.
-* *Geolocation* - check in, search for places, list past checkins.
-* *Push Notifications* - easily send push notifications to iOS, Android, or Microsoft devices.
-* *Messaging* - send messages to other users, create message groups.
-* *User Lists* - set up relationships between users.
-* *Game Scores, Metadata, and Boards* - keep track of game scores and states for individual users as well as across users.
-* *And more* - check out the rest of the offering at [buddy.com](http://buddy.com)
+* *User Accounts* - Create, delete, and authenticate users
+* *Photos* - Add, search, and share photos with other users
+* *Geolocation* - Check in, search for places, and list previous checkins
+* *Push Notifications* - Easily send push notifications to iOS, Android, and Microsoft devices
+* *Messaging* - Send messages to individuals and groups
+* *User Lists* - Set up relationships between users
+* *Game Scores, Metadata, and Boards* - Develop fully-featured, persistent games for your users
+* *And more* - Check out the rest of our API at [buddy.com](http://buddy.com)
 
 ## Getting Started
 
-To get started with the Buddy Platform SDK, please reference the "Getting Started" series of documents at [buddyplatform.com/docs](http://buddyplatform.com/docs). You will need an App ID and Key before you can use the SDK, and these documents will walk you through obtaining those, and installing the SDK.
+To get started with the Buddy Platform SDK, please reference the _Getting Started_ series of documents at [buddyplatform.com/docs](http://buddyplatform.com/docs). You will need an App ID and Key before you can use the SDK. The _Getting Started_ documents will walk you through obtaining everything you need and show you where to find the SDK for your platform.
 
-App IDs and Keys can be obtained at the Buddy Developer Dashboard at [buddyplatform.com](http://buddyplatform.com).
+App IDs and Keys can be obtained at the Buddy Developer Dashboard at [buddyplatform.com](http://buddyplatform.com/login).
 
 Full documentation for Buddy's services are available at [buddyplatform.com/docs](http://buddyplatform.com/docs).
 
@@ -46,13 +46,15 @@ Full documentation for Buddy's services are available at [buddyplatform.com/docs
 
 In your build.gradle file under 'src', add a line for the Buddy Android SDK dependency
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    **Compile 'com.buddy:androidsdk:+'**
-}
+    dependencies {
+        compile fileTree(dir: 'libs', include: ['*.jar'])
+        **Compile 'com.buddy:androidsdk:+'**
+    }
 
 This will install the "latest" release of the Buddy Android SDK.**
-**NOTE:** If you wish to limit yourself to a narrower set of releases, you can do so like this: **Compile 'com.buddy:androidsdk:0.1.+'** (which gets the latest release in the 0.1 series)
+**Note:** If you wish to limit yourself to a narrower set of releases, you can do so like this (e.g. the latest release in the 0.1 series):
+
+    Compile 'com.buddy:androidsdk:0.1.+'
 
 Then in your source files, you can import from com.buddy.sdk to access the Buddy Classes
 (e.g. import com.buddy.sdk.BuddyClient)
@@ -64,7 +66,7 @@ Then in your source files, you can import from com.buddy.sdk to access the Buddy
 To build the SDK you need to:
 
 1.  Have installed the [Android SDK Tools](http://developer.android.com/sdk/index.html)
-2.  Set the ANDROID_HOME environment variable to the Android SDK install dir
+2.  Set the ANDROID_HOME environment variable to the Android SDK install directory
 3.  Install Android SDK build tools version 19.1.0, and SDK Platform for API 10 (Android 2.3.3) 
 
 #### Build and Install
@@ -76,7 +78,7 @@ To build the SDK you need to:
 
 ## Using the Android SDK
 
-After you have created an application at the Buddy Dashboard, note your App ID and App Key.
+Collect your App ID and App Key from the [Buddy Dashboard](http://buddyplatform.com).
 
 To initialize the SDK:
 
@@ -87,39 +89,39 @@ To initialize the SDK:
     
 There are some helper functions for creating users, logging in users, and logging out users:  
 
-    // create a user
+    // Create a user
     client.loginUser('username', 'password', null, null, null, null, null, new BuddyCallback<User>(User.class) {
-   		@Override
-   		public void completed(BuddyResult<User> result) {
-   			if (result.getIsSuccess()) {
-   				TextView tv = (TextView)findViewById(R.id.textView1);
-   				tv.setText("Hello " + result.getResult().username);
-   			}
-   		}
-	 });
+        @Override
+        public void completed(BuddyResult<User> result) {
+            if (result.getIsSuccess()) {
+                TextView tv = (TextView)findViewById(R.id.textView1);
+                tv.setText("Hello " + result.getResult().username);
+            }
+        }
+    });
 	
 #### Standard REST requests
 	  
 The majority of the calls map directly to REST.  For all the calls you can either create a wrapper java class such as those found in `com.buddy.sdk.models`, or you can simply pass a type of `JsonObject` to be returned the result as a standard Gson JsonObject.
 
-In this example, we'll create a checkin so see the [Create Checkin REST documentation](http://buddyplatform.com/docs/Create%20Checkin/HTTP), then:
-	 
- 	 // create a checkin
- 	 Location location = getTheDeviceLocation();
-	 Map<String,Object> parameters = new HashMap<String,Object>();
-	 parameters.put("comment", "my first checkin");
-	 parameters.put("description", "This is where I was doing that thing.");
-	 parameters.put("location", String.format("%f,%f", location.getLatitude(), location.getLongitude());
-	 client.<JsonObject>post("/checkins", parameters, new BuddyCallback<JsonObject>(JsonObject.class) {
-	    @Override
-	    public void completed(BuddyResult<JsonObject> result) {
-	        if (result.getIsSuccess()) {
-	            JsonObject obj = result.getResult();
-	            // get the ID of the created checkin.
-	            String id = obj.getMember("id").getAsString();
-	        }
-	    }
-	 });
+In this example we will create a checkin. Take a look at the [Create Checkin REST documentation](http://buddyplatform.com/docs/Create%20Checkin/HTTP), then:
+
+    // Create a checkin
+    Location location = getTheDeviceLocation();
+    Map<String,Object> parameters = new HashMap<String,Object>();
+    parameters.put("comment", "My first checkin");
+    parameters.put("description", "This is where I was doing that thing.");
+    parameters.put("location", String.format("%f,%f", location.getLatitude(), location.getLongitude());
+    client.<JsonObject>post("/checkins", parameters, new BuddyCallback<JsonObject>(JsonObject.class) {
+        @Override
+        public void completed(BuddyResult<JsonObject> result) {
+            if (result.getIsSuccess()) {
+                JsonObject obj = result.getResult();
+                // get the ID of the created checkin.
+                String id = obj.getMember("id").getAsString();
+            }
+        }
+    });
 	
 #### Creating Response Objects
 
@@ -130,7 +132,6 @@ Creating strongly typed response objects is simple.  If the REST operation that 
 3.  Create a Java class that derives from `com.buddy.sdk.models.ModelBase` with the appropriate properties.
 
 For example, if the response to **POST /checkins** looks like:
-
 
      {
        "status": 201,
@@ -149,13 +150,13 @@ For example, if the response to **POST /checkins** looks like:
      "success": true
     }
 
-The corresponding Java object for _the unique fields under **result**_:
+The corresponding Java object for the unique field under `result` is:
 
     public class Checkin extends ModelBase {
         public String comment;
     }
     
-Note we do not need to specify the default common properties `id`, `userID`, `location`, `created`, or `lastModified`.
+**Note:** we do not need to specify the default common properties `id`, `userID`, `location`, `created`, or `lastModified`.
 
 We can then call:
 
@@ -163,14 +164,13 @@ We can then call:
 	 
 #### Managing Files
 
-For file uploads and downloads, the Buddy Android SDK handles this for you as well.  The key class is `com.buddy.sdk.BuddyFile`, which is a wrapper around an
-Android `File` or `InputStream`, along with a MIME content type.
+The Buddy Android SDK handles all necessary file management for you. The key class is `com.buddy.sdk.BuddyFile`, which is a wrapper around an Android `File` or `InputStream`, along with a MIME content type.
 
 To upload a picture:
 
     BuddyFile file = new BuddyFile(new File("/some/image/foo.jpg"), "image/jpg");
     Map<String,Object> parameters = new HashMap<String,Object>();
-    parameters.put("caption", "my first image");
+    parameters.put("caption", "My first image");
     parameters.put("data", file);
     client.<Picture>post("/pictures", parameters, new BuddyCallback<Picture>(Picture.class){
         @Override
