@@ -47,8 +47,8 @@ Full documentation for Buddy's services are available at [buddyplatform.com/docs
 In your build.gradle file under 'src', add a line for the Buddy Android SDK dependency
 
     dependencies {
-        compile fileTree(dir: 'libs', include: ['*.jar'])
-        **Compile 'com.buddy:androidsdk:+'**
+        Compile fileTree(dir: 'libs', include: ['*.jar'])
+        Compile 'com.buddy:androidsdk:+'
     }
 
 This will install the "latest" release of the Buddy Android SDK.**
