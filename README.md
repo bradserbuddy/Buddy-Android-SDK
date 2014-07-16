@@ -17,7 +17,7 @@ This SDK is a thin wrapper over the Buddy REST interfaces, but takes care of the
 * Parsing responses
 * Loading and saving credentials
 
-All that's left is making basic calls to the Buddy REST APIs.  
+The remainder of the Buddy API is easily accessible via standard REST API calls.
 
 ## Features
 
@@ -65,13 +65,13 @@ Then in your source files, you can import from com.buddy.sdk to access the Buddy
 
 To build the SDK you need to:
 
-1.  Have installed the [Android SDK Tools](http://developer.android.com/sdk/index.html)
+1.  Install the [Android SDK Tools](http://developer.android.com/sdk/index.html)
 2.  Set the ANDROID_HOME environment variable to the Android SDK install directory
 3.  Install Android SDK build tools version 19.1.0, and SDK Platform for API 10 (Android 2.3.3) 
 
 #### Build and Install
 
-1.  Clone this repository to your local machiine
+1.  Clone this repository to your local machine
 2.  From the root of this repository, run `./gradlew build` (Mac/Linux) or `gradlew.bat build` (Windows) to build the SDK
 3.  Look in the **library/build/libs** folder to find the JARs.
 4.  Add The buddy-sdk-_version_.jar file as a dependency for your Android application.
@@ -125,7 +125,7 @@ In this example we will create a checkin. Take a look at the [Create Checkin RES
 	
 #### Creating Response Objects
 
-Creating strongly typed response objects is simple.  If the REST operation that you intend to call returns a response that's not avaialble in `com.buddy.sdk.models`, you can easily create one by creating a Java object with fields that match the JSON response fields for the operation.
+Creating strongly typed response objects is simple.  If the REST operation that you intend to call returns a response that's not available in `com.buddy.sdk.models`, you can easily create one by creating a Java object with fields that match the JSON response fields for the operation.
 
 1.  Go to the Buddy Console and try your operation
 2.  When the operation completes, note the fields and types in the response
