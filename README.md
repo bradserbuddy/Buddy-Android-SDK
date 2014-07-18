@@ -89,7 +89,7 @@ To initialize the SDK:
     
 There are some helper functions for creating users, logging in users, and logging out users:  
 
-    // Create a user
+    // Login a user
     client.loginUser('username', 'password', null, null, null, null, null, new BuddyCallback<User>(User.class) {
         @Override
         public void completed(BuddyResult<User> result) {
@@ -102,7 +102,7 @@ There are some helper functions for creating users, logging in users, and loggin
 	
 #### Standard REST requests
 	  
-The majority of the calls map directly to REST.  For all the calls you can either create a wrapper java class such as those found in `com.buddy.sdk.models`, or you can simply pass a type of `JsonObject` to be returned the result as a standard Gson JsonObject.
+The majority of the calls map directly to REST.  For all the calls you can either create a wrapper java class such as those found in `com.buddy.sdk.models`, or you can simply pass a type of `JsonObject` to retur a standard Gson JsonObject.
 
 In this example we will create a checkin. Take a look at the [Create Checkin REST documentation](http://buddyplatform.com/docs/Create%20Checkin/HTTP), then:
 
@@ -128,7 +128,7 @@ In this example we will create a checkin. Take a look at the [Create Checkin RES
 Creating strongly typed response objects is simple.  If the REST operation that you intend to call returns a response that's not available in `com.buddy.sdk.models`, you can easily create one by creating a Java object with fields that match the JSON response fields for the operation.
 
 1.  Go to the Buddy Console and try your operation
-2.  When the operation completes, note the fields and types in the response
+2.  When the operation completes, note the fields and their types in the response
 3.  Create a Java class that derives from `com.buddy.sdk.models.ModelBase` with the appropriate properties.
 
 For example, if the response to **POST /checkins** looks like:
