@@ -11,4 +11,5 @@ public class BuddyClientOptions {
     public String deviceTag;
     public String appVersion;
     public boolean synchronousMode;
+    public String instanceName;
 }
