@@ -23,7 +23,32 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class BuddyClient {
+interface IBuddyClient{
+    public void setUserAuthenticationRequiredCallback(UserAuthenticationRequiredCallback callback);
+    public void setLastLocation(Location loc);
+    public Location getLastLocation();
+    public String getServiceRoot();
+    public <T> Future<BuddyResult<T>> get(String path, Map<String,Object> parameters, Class<T> clazz);
+    public <T> Future<BuddyResult<T>> get(String path, Map<String,Object> parameters, final BuddyCallback<T> callback);
+    public <T> Future<BuddyResult<T>> post(String path, Map<String,Object> parameters, Class<T> clazz);
+    public <T> Future<BuddyResult<T>> post(String path, Map<String,Object> parameters, final BuddyCallback<T> callback);
+    public <T> Future<BuddyResult<T>> patch(String path, Map<String,Object> parameters, Class<T> clazz);
+    public <T> Future<BuddyResult<T>> patch(String path, Map<String,Object> parameters, final BuddyCallback<T> callback);
+    public <T> Future<BuddyResult<T>> delete(String path, Map<String,Object> parameters, Class<T> clazz);
+    public <T> Future<BuddyResult<T>> delete(String path, Map<String,Object> parameters, final BuddyCallback<T> callback);
+    public <T> Future<BuddyResult<T>> put(String path, Map<String,Object> parameters,  Class<T> clazz);
+    public <T> Future<BuddyResult<T>> put(String path, Map<String,Object> parameters, final BuddyCallback<T> callback);
+
+    public Future<BuddyResult<User>> getCurrentUser(final BuddyCallback<User> callback);
+    public Future<BuddyResult<User>> createUser(String username, String password, String firstName, String lastName, String email, Date dateOfBirth, String gender, String tag, final BuddyCallback<User> callback);
+    public Future<BuddyResult<User>> loginUser(String username, String password, final BuddyCallback<User> callback);
+    public Future<BuddyResult<Boolean>> logoutUser(final BuddyCallback<Boolean> callback);
+    public Future<BuddyResult<TimedMetric>> recordMetricEvent(String eventName, Map<String,Object> values, final int timeoutInSeconds, final BuddyCallback<TimedMetric> callback);
+    public Future<BuddyResult<Boolean>> setPushToken(String pushToken, final BuddyCallback<Boolean> callback);
+    public void recordNotificationReceived(Intent message);
+}
+
+public class BuddyClient implements IBuddyClient {
 
 	private String app_id;
 	private String app_key;

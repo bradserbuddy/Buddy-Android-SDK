@@ -22,7 +22,7 @@ public class Buddy {
         return appId + options.instanceName;
     }
 
-    public static BuddyClient Init(Context context, String appId, String appKey, BuddyClientOptions options)
+    public static BuddyClient init(Context context, String appId, String appKey, BuddyClientOptions options)
     {
 
         BuddyClient client = null;
