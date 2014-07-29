@@ -175,56 +175,56 @@ public class BuddyClient implements IBuddyClient {
 
     public <T> Future<BuddyResult<T>> get(String path, Map<String,Object> parameters, Class<T> clazz) {
 
-        return getServiceClient().<T>makeRequest(BuddyServiceClient.GET, path, parameters, null, clazz);
+        return getServiceClient().makeRequest(BuddyServiceClient.GET, path, parameters, null, clazz);
     }
 
     public <T> Future<BuddyResult<T>> get(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
 
-        return getServiceClient().<T>makeRequest(BuddyServiceClient.GET, path, parameters, callback, null);
+        return getServiceClient().makeRequest(BuddyServiceClient.GET, path, parameters, callback, null);
     }
 
 
     public <T> Future<BuddyResult<T>> post(String path, Map<String,Object> parameters, Class<T> clazz) {
 
-        return getServiceClient().<T>makeRequest(BuddyServiceClient.POST, path, parameters, null, clazz);
+        return getServiceClient().makeRequest(BuddyServiceClient.POST, path, parameters, null, clazz);
     }
 
     public <T> Future<BuddyResult<T>> post(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
 
-        return getServiceClient().<T>makeRequest(BuddyServiceClient.POST, path, parameters, callback, null);
+        return getServiceClient().makeRequest(BuddyServiceClient.POST, path, parameters, callback, null);
     }
 
 
     public <T> Future<BuddyResult<T>> patch(String path, Map<String,Object> parameters, Class<T> clazz) {
 
-        return getServiceClient().<T>makeRequest(BuddyServiceClient.PATCH, path, parameters, null, clazz);
+        return getServiceClient().makeRequest(BuddyServiceClient.PATCH, path, parameters, null, clazz);
     }
 
     public <T> Future<BuddyResult<T>> patch(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
 
-        return getServiceClient().<T>makeRequest(BuddyServiceClient.PATCH, path, parameters, callback, null);
+        return getServiceClient().makeRequest(BuddyServiceClient.PATCH, path, parameters, callback, null);
     }
 
 
     public <T> Future<BuddyResult<T>> delete(String path, Map<String,Object> parameters, Class<T> clazz) {
 
-        return getServiceClient().<T>makeRequest(BuddyServiceClient.DELETE, path, parameters, null, clazz);
+        return getServiceClient().makeRequest(BuddyServiceClient.DELETE, path, parameters, null, clazz);
     }
 
     public <T> Future<BuddyResult<T>> delete(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
 
-        return getServiceClient().<T>makeRequest(BuddyServiceClient.DELETE, path, parameters, callback, null);
+        return getServiceClient().makeRequest(BuddyServiceClient.DELETE, path, parameters, callback, null);
     }
 
 
     public <T> Future<BuddyResult<T>> put(String path, Map<String,Object> parameters,  Class<T> clazz) {
 
-        return getServiceClient().<T>makeRequest(BuddyServiceClient.PUT, path, parameters, null, clazz);
+        return getServiceClient().makeRequest(BuddyServiceClient.PUT, path, parameters, null, clazz);
     }
 
     public <T> Future<BuddyResult<T>> put(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
 
-        return getServiceClient().<T>makeRequest(BuddyServiceClient.PUT, path, parameters, callback, null);
+        return getServiceClient().makeRequest(BuddyServiceClient.PUT, path, parameters, callback, null);
     }
 
     private String getDeviceId() {
@@ -265,7 +265,7 @@ public class BuddyClient implements IBuddyClient {
 
         if (context != null) {
             PackageManager manager = context.getPackageManager();
-            PackageInfo info = null;
+            PackageInfo info;
             try {
                 info = manager.getPackageInfo(context.getPackageName(), 0);
                 parameters.put("appVersion", String.format("%s (%d)", info.versionName, info.versionCode));
@@ -282,7 +282,7 @@ public class BuddyClient implements IBuddyClient {
             parameters.put("appversion", options.appVersion);
         }
         parameters.put(NoRegisterDevice, true);
-        this.<AccessTokenResult>post("/devices", parameters, callback);
+        this.post("/devices", parameters, callback);
     }
 
 
@@ -348,7 +348,7 @@ public class BuddyClient implements IBuddyClient {
 
         parameters.put("tag", tag);
 
-        return this.<User>post("/users", parameters, getUserCallback(callback));
+        return this.post("/users", parameters, getUserCallback(callback));
 
     }
 
@@ -357,8 +357,7 @@ public class BuddyClient implements IBuddyClient {
         parameters.put("username", username);
         parameters.put("password", password);
 
-        return this.<User>post("/users/login", parameters, getUserCallback(callback));
-
+        return this.post("/users/login", parameters, getUserCallback(callback));
     }
 
     public Future<BuddyResult<Boolean>> logoutUser(final BuddyCallback<Boolean> callback) {
@@ -396,7 +395,7 @@ public class BuddyClient implements IBuddyClient {
                     }
                 }
                 if (callback != null) {
-                    callback.completed(result.<Boolean>convert(Boolean.TRUE));
+                    callback.completed(result.convert(Boolean.TRUE));
                 }
             }
         });
@@ -475,7 +474,7 @@ public class BuddyClient implements IBuddyClient {
             @Override
             public void completed(BuddyResult<Object> result) {
                 if (callback != null) {
-                    callback.completed(result.<Boolean>convert(result.getIsSuccess()));
+                    callback.completed(result.convert(result.getIsSuccess()));
                 }
             }
         });
@@ -549,9 +548,8 @@ public class BuddyClient implements IBuddyClient {
     private SharedPreferences getPreferences()
     {
         if (context != null) {
-            SharedPreferences preferences = context.getSharedPreferences(String.format("com.buddy-%s-%s", app_id, options == null ? null : options.settingsPrefix), Context.MODE_PRIVATE);
 
-            return preferences;
+            return context.getSharedPreferences(String.format("com.buddy-%s-%s", app_id, options == null ? null : options.settingsPrefix), Context.MODE_PRIVATE);
         }
         return null;
     }
