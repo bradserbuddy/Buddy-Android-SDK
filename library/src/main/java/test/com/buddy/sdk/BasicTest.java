@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.test.InstrumentationTestCase;
 
+import com.buddy.sdk.Buddy;
 import com.buddy.sdk.BuddyClient;
 import com.buddy.sdk.BuddyClientOptions;
 import com.buddy.sdk.models.Picture;
@@ -48,7 +49,7 @@ public class BasicTest extends InstrumentationTestCase {
         options.synchronousMode = syncMode;
         options.serviceRoot = TargetUrl;
 
-        BuddyClient client = new BuddyClient(null, appid == null ? "appid" : appid,appkey== null ? "appkey": appkey, options);
+        BuddyClient client = Buddy.init(null, appid == null ? "appid" : appid, appkey == null ? "appkey" : appkey, options);
 
         return client;
     }
