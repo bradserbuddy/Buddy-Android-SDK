@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-interface IBuddyClient{
+public interface BuddyClient{
     public void setUserAuthenticationRequiredCallback(UserAuthenticationRequiredCallback callback);
     public void setLastLocation(Location loc);
     public Location getLastLocation();
@@ -46,9 +46,11 @@ interface IBuddyClient{
     public Future<BuddyResult<TimedMetric>> recordMetricEvent(String eventName, Map<String,Object> values, final int timeoutInSeconds, final BuddyCallback<TimedMetric> callback);
     public Future<BuddyResult<Boolean>> setPushToken(String pushToken, final BuddyCallback<Boolean> callback);
     public void recordNotificationReceived(Intent message);
+    void handleError(BuddyResult result);
+    void getAccessToken(boolean autoRegister, final AccessTokenCallback callback);
 }
 
-public class BuddyClient implements IBuddyClient {
+class BuddyClientImpl implements BuddyClient {
 
 	private String app_id;
 	private String app_key;
@@ -59,11 +61,11 @@ public class BuddyClient implements IBuddyClient {
 	private Location lastLocation;
     private UserAuthenticationRequiredCallback userAuthCallback;
 
-	public BuddyClient(Context context, String appId, String appKey){
+	public BuddyClientImpl(Context context, String appId, String appKey){
 		this(context, appId, appKey, null);
 	}
 
-    public BuddyClient(Context context, String appId, String appKey, BuddyClientOptions options) {
+    public BuddyClientImpl(Context context, String appId, String appKey, BuddyClientOptions options) {
 
         this.app_id = appId;
         this.app_key = appKey;
@@ -82,7 +84,6 @@ public class BuddyClient implements IBuddyClient {
         }
         getServiceClient();
     }
-
 
     public void setUserAuthenticationRequiredCallback(UserAuthenticationRequiredCallback callback) {
         this.userAuthCallback = callback;
@@ -117,7 +118,7 @@ public class BuddyClient implements IBuddyClient {
         }
     }
 
-    void getAccessToken(boolean autoRegister, final AccessTokenCallback callback) {
+    public void getAccessToken(boolean autoRegister, final AccessTokenCallback callback) {
 
         String token = getSettings().getAccessToken();
 		if (token != null) {
@@ -153,11 +154,9 @@ public class BuddyClient implements IBuddyClient {
         }
     }
 
-
     //
     // REST Stuff
     //
-
     public String getServiceRoot() {
         return
                 getSettings().getServiceRoot();
@@ -171,7 +170,6 @@ public class BuddyClient implements IBuddyClient {
 		}
 		return serviceClient;
 	}
-
 
     public <T> Future<BuddyResult<T>> get(String path, Map<String,Object> parameters, Class<T> clazz) {
 
@@ -289,7 +287,6 @@ public class BuddyClient implements IBuddyClient {
     //
     // User Stuff
     //
-
     public Future<BuddyResult<User>> getCurrentUser(final BuddyCallback<User> callback) {
 
         return this.get("/users/me", null, new BuddyCallback<User>(User.class) {
@@ -422,7 +419,6 @@ public class BuddyClient implements IBuddyClient {
     //
     // Metrics stuff
     //
-
     public Future<BuddyResult<TimedMetric>> recordMetricEvent(String eventName, Map<String,Object> values, final int timeoutInSeconds, final BuddyCallback<TimedMetric> callback) {
         Map<String, Object> parameters = new HashMap<String, Object>();
         if (values != null) {
@@ -443,7 +439,7 @@ public class BuddyClient implements IBuddyClient {
             public void completed(BuddyResult<TimedMetric> result) {
                 if (result.getIsSuccess() && timeoutInSeconds > 0) {
                     TimedMetric tm = result.getResult();
-                    tm.setBuddyClient(BuddyClient.this);
+                    tm.setBuddyClient(BuddyClientImpl.this);
                 }
                 if (callback != null) {
                     callback.completed(result);
@@ -583,7 +579,7 @@ public class BuddyClient implements IBuddyClient {
         return settings;
     }
 
-    void handleError(BuddyResult result) {
+    public void handleError(BuddyResult result) {
         String error = result.getError();
 
         if (error != null) {
@@ -604,8 +600,6 @@ public class BuddyClient implements IBuddyClient {
                     }
                 });
             }
-
-
         }
     }
 }

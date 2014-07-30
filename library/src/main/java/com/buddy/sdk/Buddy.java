@@ -42,7 +42,7 @@ public class Buddy {
             client = _clients.get(key);
         }
         else {
-            client = new BuddyClient(context, appId, appKey, options);
+            client = new BuddyClientImpl(context, appId, appKey, options);
             _clients.put(key, client);
         }
 
@@ -114,7 +114,7 @@ public class Buddy {
         return getCurrentClient().getLastLocation();
     }
 
-    public static String getServiceRoot()
+    private static String getServiceRoot()
     {
         return getCurrentClient().getServiceRoot();
     }
