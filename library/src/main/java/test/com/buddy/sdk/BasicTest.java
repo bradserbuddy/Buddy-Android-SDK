@@ -54,7 +54,6 @@ public class BasicTest extends InstrumentationTestCase {
         return client;
     }
 
-
     public void testPingSuccess() throws Exception {
         BuddyClient client = getClient();
 
@@ -66,10 +65,6 @@ public class BasicTest extends InstrumentationTestCase {
         assertNull(result.getError());
         assertEquals("Pong", result.getResult());
     }
-
-
-
-
 
     public void testPingFail() throws Exception {
 

@@ -18,7 +18,7 @@ public class Buddy {
     private static BuddyClient getCurrentClient()
     {
         if(_currentClient == null)
-            throw new RuntimeException("Must call Buddy.init before calling");
+            throw new RuntimeException("Buddy.init must be called before calling any service methods.");
 
         return _currentClient;
     }
@@ -30,8 +30,17 @@ public class Buddy {
         return appId + options.instanceName;
     }
 
+    public static BuddyClient init(Context context, String appId, String appKey)
+    {
+        return  init(context, appId,appKey, null);
+    }
+
     public static BuddyClient init(Context context, String appId, String appKey, BuddyClientOptions options)
     {
+        if(options == null)
+        {
+            options = new BuddyClientOptions();
+        }
 
         BuddyClient client = null;
 
