@@ -85,13 +85,12 @@ To initialize the SDK:
     import com.buddy.sdk;
     // ...
     // Create the SDK client
-    BuddyClientOptions options = new BuddyClientOptions();
-    BuddyClient client = Buddy.init(null, "appId", "appKey", options)
+    BuddyClient client = Buddy.init(myContext, "appId", "appKey");
     
 There are some helper functions for creating users, logging in users, and logging out users:  
 
     // Login a user
-    client.loginUser('username', 'password', null, null, null, null, null, new BuddyCallback<User>(User.class) {
+    Buddy.loginUser('username', 'password', null, null, null, null, null, new BuddyCallback<User>(User.class) {
         @Override
         public void completed(BuddyResult<User> result) {
             if (result.getIsSuccess()) {
@@ -100,6 +99,23 @@ There are some helper functions for creating users, logging in users, and loggin
             }
         }
     });
+    
+If you need to have multiple clients, for example if you need to talk to multiple users from your app, you can capture the result from `Buddy.init` and call through those clients:
+
+    BuddyClientOptions opt1 = new BuddyClientOptions();
+    opt1.instanceName = "client1";
+    
+    BuddyClient client1 = Buddy.init(app1, key1, opt1);
+    
+    BuddyClientOptions opt2 = new BuddyClientOptions();
+    opt1.instanceName = "client2";
+    
+    BuddyClient client2 = Buddy.init(app1, key1, opt2);
+    
+    client1.loginUser("user1", "pw1", null);
+    client2.loginUser("user2", "pw2", null);
+    
+The `Buddy` static class is has the same signature as the `BuddyClient` class, and is shorthand for calling the most recently created client via a `Buddy.init` call.  So for most applications, `Buddy` will work fine.
 	
 #### Standard REST requests
 	  
@@ -113,7 +129,7 @@ In this example we will create a checkin. Take a look at the [Create Checkin RES
     parameters.put("comment", "My first checkin");
     parameters.put("description", "This is where I was doing that thing.");
     parameters.put("location", String.format("%f,%f", location.getLatitude(), location.getLongitude());
-    client.<JsonObject>post("/checkins", parameters, new BuddyCallback<JsonObject>(JsonObject.class) {
+    Buddy.<JsonObject>post("/checkins", parameters, new BuddyCallback<JsonObject>(JsonObject.class) {
         @Override
         public void completed(BuddyResult<JsonObject> result) {
             if (result.getIsSuccess()) {
@@ -142,7 +158,7 @@ For example, if the response to **POST /checkins** looks like:
          "id": "cb.gBgbvKFkdhnp",
          "location": {
            "lat": 46.2,
-            "lng": -120.1
+           "lng": -120.1
           },
          "created": "2014-07-09T07:07:21.463Z",
          "lastModified": "2014-07-09T07:07:21.463Z"
@@ -161,7 +177,7 @@ The corresponding Java object for the unique field under `result` is:
 
 We can then call:
 
-     client.<Checkin>get("/checkins/" + myCheckinId, null, new BuddyCallback<Checkin>(Checkin.class){...});
+     Buddy.<Checkin>get("/checkins/" + myCheckinId, null, new BuddyCallback<Checkin>(Checkin.class){...});
 	 
 #### Managing Files
 
@@ -173,7 +189,7 @@ To upload a picture:
     Map<String,Object> parameters = new HashMap<String,Object>();
     parameters.put("caption", "My first image");
     parameters.put("data", file);
-    client.<Picture>post("/pictures", parameters, new BuddyCallback<Picture>(Picture.class){
+    Buddy.<Picture>post("/pictures", parameters, new BuddyCallback<Picture>(Picture.class){
         @Override
         public void completed(BuddyResult<Picture> result) {
             if (result.getIsSuccess()) {...}
@@ -182,7 +198,7 @@ To upload a picture:
     	
 Likewise, to download a picture, specify BuddyFile as the operation type:
 
-    client.<BuddyFile>get("/pictures/" + myPictureId + "/file", null, new BuddyCallback<BuddyFile>(BuddyFile.class){...});
+    Buddy.<BuddyFile>get("/pictures/" + myPictureId + "/file", null, new BuddyCallback<BuddyFile>(BuddyFile.class){...});
 
 
 ## Contributing Back: Pull Requests
