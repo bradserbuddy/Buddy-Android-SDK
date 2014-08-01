@@ -85,7 +85,8 @@ To initialize the SDK:
     import com.buddy.sdk;
     // ...
     // Create the SDK client
-    BuddyClient client = new BuddyClient(context, myAppId, myAppKey);
+    BuddyClientOptions options = new BuddyClientOptions();
+    BuddyClient client = Buddy.init(null, "appId", "appKey", options)
     
 There are some helper functions for creating users, logging in users, and logging out users:  
 

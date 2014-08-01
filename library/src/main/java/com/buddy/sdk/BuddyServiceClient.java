@@ -460,8 +460,8 @@ class BuddyServiceClient {
         if (parameters != null) {
             // should we disable auto register?
             //
-            if (parameters.containsKey(BuddyClient.NoRegisterDevice)) {
-                parameters.remove(BuddyClient.NoRegisterDevice);
+            if (parameters.containsKey(BuddyClientImpl.NoRegisterDevice)) {
+                parameters.remove(BuddyClientImpl.NoRegisterDevice);
                 autoRegister = false;
             }
         }
