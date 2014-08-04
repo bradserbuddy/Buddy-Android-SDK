@@ -19,19 +19,6 @@ This SDK is a thin wrapper over the Buddy REST API that takes care of the hard p
 
 The remainder of the Buddy API is easily accessible via standard REST API calls.
 
-## Features
-
-The Buddy Platform offers turnkey support for many common features:
-
-* *User Accounts* - Create, delete, and authenticate users
-* *Photos* - Add, search, and share photos with other users
-* *Geolocation* - Check in, search for places, and list previous checkins
-* *Push Notifications* - Easily send push notifications to iOS, Android, and Microsoft devices
-* *Messaging* - Send messages to individuals and groups
-* *User Lists* - Set up relationships between users
-* *Game Scores, Metadata, and Boards* - Develop fully-featured, persistent games for your users
-* *There’s more!* - Check out the rest of our API at [buddy.com](http://buddy.com)
-
 ## Getting Started
 
 To get started with the Buddy Platform SDK, please reference the _Getting Started_ series of documents at [buddyplatform.com/docs](http://buddyplatform.com/docs). You will need an App ID and Key before you can use the SDK. The _Getting Started_ documents will walk you through obtaining everything you need and show you where to find the SDK for your platform.
@@ -108,15 +95,23 @@ The `Buddy` static class is has the same signature as the `BuddyClient` class, a
 
 There are helper functions for creating, logging in, and logging out users:
 
-#### Create A User
+#### Create User
 
-    Buddy.createUser("someUser", "somePassword", null, null, null, null, null, null, new BuddyCallback<User>(User.class) {...});
+    Buddy.createUser("someUser", "somePassword", null, null, null, null, null, null, new BuddyCallback<User>(User.class) {
+      @Override
+      public void completed(BuddyResult<User> result) {
+        if (result.getIsSuccess()) {
+          TextView tv = (TextView)findViewById(R.id.textView1);
+          tv.setText("Hello " + result.getResult().username);
+        }
+      }
+    });
 
-#### Login a user
-    
+#### User Login
+
     Buddy.loginUser("someUser", "somePassword", new BuddyCallback<User>(User.class) {...});
 
-#### Logout A User
+#### User Logout
     
     // Logout is simple!
     Buddy.logoutUser();
@@ -125,9 +120,27 @@ There are helper functions for creating, logging in, and logging out users:
 	  
 Each SDK provides general wrappers that make REST calls to Buddy. For all the calls you can either create a wrapper java class such as those found in `com.buddy.sdk.models`, or you can simply pass a type of `JsonObject` to return a standard Gson JsonObject.
 
+#### GET
+
+This sample searches app-level metadata by `keyPrefix` for any keys that start with "dataPoint_". See [Search Metadata](http://buddyplatform.com/docs/Search%20Metadata) for a full list of parameters.
+
+    // Search Metadata by key prefix
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put("keyPrefix", "dataPoint_");
+    Buddy.<JsonObject>get("/metadata/app", parameters, new BuddyCallback<JsonObject>(JsonObject.class) {
+      @Override
+      public void completed(BuddyResult<JsonObject> result) {
+        if (result.getIsSuccess()) {
+          JsonObject obj = result.getResult();
+          // Get the first result from the pageResults response (this assumes we have at least one result from the query)
+          String _d = obj.getMember("pagedResults")[0].getAsString();
+        }
+      }
+    });
+
 #### POST
 
-In this example we will create a checkin. Take a look at the [Create Checkin REST documentation](http://buddyplatform.com/docs/Create%20Checkin/HTTP), then:
+In this example we will create a checkin. Take a look at the [Create Checkin documentation](http://buddyplatform.com/docs/Create%20Checkin/HTTP), then:
 
     // Create a checkin
     // This sample demonstrates a callback instead of fetching the result from Future<T>
@@ -137,23 +150,15 @@ In this example we will create a checkin. Take a look at the [Create Checkin RES
     parameters.put("description", "This is where I was doing that thing.");
     parameters.put("location", String.format("%f,%f", location.getLatitude(), location.getLongitude());
     Buddy.<JsonObject>post("/checkins", parameters, new BuddyCallback<JsonObject>(JsonObject.class) {
-        @Override
-        public void completed(BuddyResult<JsonObject> result) {
-            if (result.getIsSuccess()) {
-                JsonObject obj = result.getResult();
-                // get the ID of the created checkin.
-                String id = obj.getMember("id").getAsString();
-            }
+      @Override
+      public void completed(BuddyResult<JsonObject> result) {
+        if (result.getIsSuccess()) {
+          JsonObject obj = result.getResult();
+          // get the ID of the created checkin.
+          String id = obj.getMember("id").getAsString();
         }
+      }
     });
-
-#### GET
-
-This GET sample retrieves information about a picture stored with Buddy.
-
-    Future<BuddyResult<Picture>> handle = Buddy.get(String.format("/pictures/%f", pictureId), null, Picture.class);
-
-    BuddyResult<Picture> result = handle.get();
 
 #### PUT/PATCH/DELETE
 
@@ -161,7 +166,7 @@ Each remaining REST verb is available for use through the Buddy SDK. All verbs f
 
 ### Working With Files
 
-Buddy offers support for both pictures and blobs. The Android SDK works with files through our REST interface similarly to other API calls.
+Buddy offers support for binary files. The Android SDK works with files through our REST interface similarly to other API calls.
 
 #### Uploading A Picture
 
@@ -178,14 +183,17 @@ The Buddy Android SDK handles all necessary file management for you. The key cla
         }
     });
 
-#### Downloading A Picture
+#### Downloading A File
 
-To download a picture specify BuddyFile as the operation type:
+Our file example uses pictures. To download a picture specify BuddyFile as the operation type:
 
     // Calling GET on "/pictures/{id}/file" returns a 302 response with a redirect URL that needs to be handled by your app
-    Future<BuddyFile> handle = Buddy.get(String.format("/pictures/%f/file", pictureId), null, BuddyFile.class);
-
-    BuddyFile result = handle.get();
+    Buddy.get(String.format("/pictures/%f/file", pictureId), null, new BuddyCallback<BuddyFile>(BuddyFile.class) {
+      @Override
+      public void completed(BuddyFile file) {
+        // Do something with your picture!
+      }
+    });
 
 **Note:** Responses for files deviate from the standard Buddy response templates. See the [Buddy Platform documentation](http://buddyplatform.com/docs) for more information.
 	
