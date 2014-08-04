@@ -6,11 +6,11 @@ Please refer to [buddyplatform.com/docs](http://buddyplatform.com/docs) for more
 
 ## Introduction
 
-Buddy enables developers to build engaging, cloud-connected apps without having to write, test, manage or scale server-side code and infrastructure. We noticed that most mobile app developers end up writing the same code over and over again: user management, photo management, geolocation checkins, metadata, and more.  
+We realized most app developers end up writing the same code over and over again: user management, photo management, geolocation, check-ins, metadata, and other basic features. Buddy enables developers to build cloud-connected apps without having to write, test, manage or scale server-side code and infrastructure.
 
-Buddy's easy-to-use, scenario-focused APIs let you spend more time building your app, and less time worrying about backend infrastructure.  
+Buddy's easy-to-use, scenario-focused APIs let you spend more time building your app and less time worrying about backend infrastructure.
 
-This SDK is a thin wrapper over the Buddy REST interfaces, but takes care of the hard parts for you:
+This SDK is a thin wrapper over the Buddy REST API that takes care of the hard parts for you:
 
 * Building and formatting requests
 * Managing authentication
@@ -21,7 +21,7 @@ The remainder of the Buddy API is easily accessible via standard REST API calls.
 
 ## Features
 
-The Buddy Platform offers turnkey support for many common features, including:
+The Buddy Platform offers turnkey support for many common features:
 
 * *User Accounts* - Create, delete, and authenticate users
 * *Photos* - Add, search, and share photos with other users
@@ -30,7 +30,7 @@ The Buddy Platform offers turnkey support for many common features, including:
 * *Messaging* - Send messages to individuals and groups
 * *User Lists* - Set up relationships between users
 * *Game Scores, Metadata, and Boards* - Develop fully-featured, persistent games for your users
-* *And more* - Check out the rest of our API at [buddy.com](http://buddy.com)
+* *There’s more!* - Check out the rest of our API at [buddy.com](http://buddy.com)
 
 ## Getting Started
 
@@ -51,12 +51,12 @@ In your build.gradle file under 'src', add a line for the Buddy Android SDK depe
         Compile 'com.buddy:androidsdk:+'
     }
 
-This will install the "latest" release of the Buddy Android SDK.**
+This will install the latest release of the Buddy Android SDK.
 **Note:** If you wish to limit yourself to a narrower set of releases, you can do so like this (e.g. the latest release in the 0.1 series):
 
     Compile 'com.buddy:androidsdk:0.1.+'
 
-Then in your source files, you can import from com.buddy.sdk to access the Buddy Classes
+At this point you should be able to import from com.buddy.sdk to access the Buddy Classes
 (e.g. import com.buddy.sdk.BuddyClient)
 
 ### Install Locally
@@ -80,25 +80,12 @@ To build the SDK you need to:
 
 Collect your App ID and App Key from the [Buddy Dashboard](http://buddyplatform.com).
 
-To initialize the SDK:
+### Initialize The SDK
 
     import com.buddy.sdk;
     // ...
     // Create the SDK client
     BuddyClient client = Buddy.init(myContext, "appId", "appKey");
-    
-There are some helper functions for creating users, logging in users, and logging out users:  
-
-    // Login a user
-    Buddy.loginUser('username', 'password', null, null, null, null, null, new BuddyCallback<User>(User.class) {
-        @Override
-        public void completed(BuddyResult<User> result) {
-            if (result.getIsSuccess()) {
-                TextView tv = (TextView)findViewById(R.id.textView1);
-                tv.setText("Hello " + result.getResult().username);
-            }
-        }
-    });
     
 If you need to have multiple clients, for example if you need to talk to multiple users from your app, you can capture the result from `Buddy.init` and call through those clients:
 
@@ -115,15 +102,35 @@ If you need to have multiple clients, for example if you need to talk to multipl
     client1.loginUser("user1", "pw1", null);
     client2.loginUser("user2", "pw2", null);
     
-The `Buddy` static class is has the same signature as the `BuddyClient` class, and is shorthand for calling the most recently created client via a `Buddy.init` call.  So for most applications, `Buddy` will work fine.
+The `Buddy` static class is has the same signature as the `BuddyClient` class, and is shorthand for calling the most recently created client via a `Buddy.init()` call.
+
+### Create/Login Users
+
+There are helper functions for creating, logging in, and logging out users:
+
+#### Create A User
+
+    Buddy.createUser("someUser", "somePassword", null, null, null, null, null, null, new BuddyCallback<User>(User.class) {...});
+
+#### Login a user
+    
+    Buddy.loginUser("someUser", "somePassword", new BuddyCallback<User>(User.class) {...});
+
+#### Logout A User
+    
+    // Logout is simple!
+    Buddy.logoutUser();
 	
-#### Standard REST requests
+### REST Interface
 	  
-The majority of the calls map directly to REST.  For all the calls you can either create a wrapper java class such as those found in `com.buddy.sdk.models`, or you can simply pass a type of `JsonObject` to retur a standard Gson JsonObject.
+Each SDK provides general wrappers that make REST calls to Buddy. For all the calls you can either create a wrapper java class such as those found in `com.buddy.sdk.models`, or you can simply pass a type of `JsonObject` to return a standard Gson JsonObject.
+
+#### POST
 
 In this example we will create a checkin. Take a look at the [Create Checkin REST documentation](http://buddyplatform.com/docs/Create%20Checkin/HTTP), then:
 
     // Create a checkin
+    // This sample demonstrates a callback instead of fetching the result from Future<T>
     Location location = getTheDeviceLocation();
     Map<String,Object> parameters = new HashMap<String,Object>();
     parameters.put("comment", "My first checkin");
@@ -139,8 +146,50 @@ In this example we will create a checkin. Take a look at the [Create Checkin RES
             }
         }
     });
+
+#### GET
+
+This GET sample retrieves information about a picture stored with Buddy.
+
+    Future<BuddyResult<Picture>> handle = Buddy.get(String.format("/pictures/%f", pictureId), null, Picture.class);
+
+    BuddyResult<Picture> result = handle.get();
+
+#### PUT/PATCH/DELETE
+
+Each remaining REST verb is available for use through the Buddy SDK. All verbs function in a similar fashion; more detailed documentation can be found on our [Buddy Platform documentation](http://buddyplatform.com/docs).
+
+### Working With Files
+
+Buddy offers support for both pictures and blobs. The Android SDK works with files through our REST interface similarly to other API calls.
+
+#### Uploading A Picture
+
+The Buddy Android SDK handles all necessary file management for you. The key class is `com.buddy.sdk.BuddyFile`, which is a wrapper around an Android `File` or `InputStream`, along with a MIME content type.
+
+    BuddyFile file = new BuddyFile(new File("/some/image/foo.jpg"), "image/jpg");
+    Map<String,Object> parameters = new HashMap<String,Object>();
+    parameters.put("caption", "My first image");
+    parameters.put("data", file);
+    Buddy.<Picture>post("/pictures", parameters, new BuddyCallback<Picture>(Picture.class){
+        @Override
+        public void completed(BuddyResult<Picture> result) {
+            if (result.getIsSuccess()) {...}
+        }
+    });
+
+#### Downloading A Picture
+
+To download a picture specify BuddyFile as the operation type:
+
+    // Calling GET on "/pictures/{id}/file" returns a 302 response with a redirect URL that needs to be handled by your app
+    Future<BuddyFile> handle = Buddy.get(String.format("/pictures/%f/file", pictureId), null, BuddyFile.class);
+
+    BuddyFile result = handle.get();
+
+**Note:** Responses for files deviate from the standard Buddy response templates. See the [Buddy Platform documentation](http://buddyplatform.com/docs) for more information.
 	
-#### Creating Response Objects
+### Creating Response Objects
 
 Creating strongly typed response objects is simple.  If the REST operation that you intend to call returns a response that's not available in `com.buddy.sdk.models`, you can easily create one by creating a Java object with fields that match the JSON response fields for the operation.
 
@@ -148,7 +197,7 @@ Creating strongly typed response objects is simple.  If the REST operation that 
 2.  When the operation completes, note the fields and their types in the response
 3.  Create a Java class that derives from `com.buddy.sdk.models.ModelBase` with the appropriate properties.
 
-For example, if the response to **POST /checkins** looks like:
+For example, the response to **POST /checkins** looks like:
 
      {
        "status": 201,
@@ -177,29 +226,7 @@ The corresponding Java object for the unique field under `result` is:
 
 We can then call:
 
-     Buddy.<Checkin>get("/checkins/" + myCheckinId, null, new BuddyCallback<Checkin>(Checkin.class){...});
-	 
-#### Managing Files
-
-The Buddy Android SDK handles all necessary file management for you. The key class is `com.buddy.sdk.BuddyFile`, which is a wrapper around an Android `File` or `InputStream`, along with a MIME content type.
-
-To upload a picture:
-
-    BuddyFile file = new BuddyFile(new File("/some/image/foo.jpg"), "image/jpg");
-    Map<String,Object> parameters = new HashMap<String,Object>();
-    parameters.put("caption", "My first image");
-    parameters.put("data", file);
-    Buddy.<Picture>post("/pictures", parameters, new BuddyCallback<Picture>(Picture.class){
-        @Override
-        public void completed(BuddyResult<Picture> result) {
-            if (result.getIsSuccess()) {...}
-        }
-    });
-    	
-Likewise, to download a picture, specify BuddyFile as the operation type:
-
-    Buddy.<BuddyFile>get("/pictures/" + myPictureId + "/file", null, new BuddyCallback<BuddyFile>(BuddyFile.class){...});
-
+     Buddy.<BuddyResult<Checkin>>get(String.format("/checkins/%f", checkinId), null, new BuddyCallback<Checkin>(Checkin.class){...});
 
 ## Contributing Back: Pull Requests
 
@@ -209,7 +236,7 @@ To submit a change to the Buddy SDK please do the following:
 
 1. Create your own fork of the Buddy SDK
 2. Make the change to your fork
-3. Before creating your pull request, please sync your repository to the current state of the parent repository: ```git pull origin master```
+3. Before creating your pull request, please sync your repository to the current state of the parent repository: `git pull origin master`
 4. Commit your changes, then [submit a pull request](https://help.github.com/articles/using-pull-requests) for just that commit
 
 ## License
