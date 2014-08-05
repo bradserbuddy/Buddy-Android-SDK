@@ -65,7 +65,7 @@ To build the SDK you need to:
 
 ## Using the Android SDK
 
-Collect your App ID and App Key from the [Buddy Dashboard](http://buddyplatform.com).
+Visit the [Buddy Dashboard](http://buddyplatform.com) to obtain your application ID and key.
 
 ### Initialize The SDK
 
