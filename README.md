@@ -2,7 +2,7 @@
 
 These release notes are for the Buddy Platform Android SDK.
 
-Please refer to [buddyplatform.com/docs](http://buddyplatform.com/docs) for more details on the Android SDK.
+Please refer to [buddyplatform.com/docs](https://buddyplatform.com/docs) for more details on the Android SDK.
 
 ## Introduction
 
@@ -21,11 +21,11 @@ The remainder of the Buddy API is easily accessible via standard REST API calls.
 
 ## Getting Started
 
-To get started with the Buddy Platform SDK, please reference the _Getting Started_ series of documents at [buddyplatform.com/docs](http://buddyplatform.com/docs). You will need an App ID and Key before you can use the SDK. The _Getting Started_ documents will walk you through obtaining everything you need and show you where to find the SDK for your platform.
+To get started with the Buddy Platform SDK, please reference the _Getting Started_ series of documents at [buddyplatform.com/docs](https://buddyplatform.com/docs). You will need an App ID and Key before you can use the SDK. The _Getting Started_ documents will walk you through obtaining everything you need and show you where to find the SDK for your platform.
 
-App IDs and Keys can be obtained at the Buddy Developer Dashboard at [buddyplatform.com](http://buddyplatform.com/login).
+App IDs and Keys can be obtained at the Buddy Developer Dashboard at [buddyplatform.com](https://buddyplatform.com/login).
 
-Full documentation for Buddy's services are available at [buddyplatform.com/docs](http://buddyplatform.com/docs).
+Full documentation for Buddy's services are available at [buddyplatform.com/docs](https://buddyplatform.com/docs).
 
 ## Installing the SDK
 
@@ -43,7 +43,7 @@ This will install the latest release of the Buddy Android SDK.
 
     Compile 'com.buddy:androidsdk:0.1.+'
 
-At this point you should be able to import from com.buddy.sdk to access the Buddy Classes
+At this point you will be able to import from com.buddy.sdk to access the Buddy Classes
 (e.g. import com.buddy.sdk.BuddyClient)
 
 ### Install Locally
@@ -65,7 +65,7 @@ To build the SDK you need to:
 
 ## Using the Android SDK
 
-Visit the [Buddy Dashboard](http://buddyplatform.com) to obtain your application ID and key.
+Visit the [Buddy Dashboard](https://buddyplatform.com) to obtain your application ID and key.
 
 ### Initialize The SDK
 
@@ -122,7 +122,7 @@ Each SDK provides general wrappers that make REST calls to Buddy. For all the ca
 
 #### GET
 
-This sample searches app-level metadata by `keyPrefix` for any keys that start with "dataPoint_". See [Search Metadata](http://buddyplatform.com/docs/Search%20Metadata) for a full list of parameters.
+This sample searches app-level metadata by `keyPrefix` for any keys that start with "dataPoint_". See [Search Metadata](https://buddyplatform.com/docs/Search%20Metadata) for a full list of parameters.
 
     // Search Metadata by key prefix
     Map<String, Object> parameters = new HashMap<String, Object>();
@@ -140,7 +140,7 @@ This sample searches app-level metadata by `keyPrefix` for any keys that start w
 
 #### POST
 
-In this example we will create a checkin. Take a look at the [Create Checkin documentation](http://buddyplatform.com/docs/Create%20Checkin/HTTP), then:
+In this example we will create a checkin. Take a look at the [Create Checkin documentation](https://buddyplatform.com/docs/Create%20Checkin/HTTP), then:
 
     // Create a checkin
     // This sample demonstrates a callback instead of fetching the result from Future<T>
@@ -162,7 +162,7 @@ In this example we will create a checkin. Take a look at the [Create Checkin doc
 
 #### PUT/PATCH/DELETE
 
-Each remaining REST verb is available for use through the Buddy SDK. All verbs function in a similar fashion; more detailed documentation can be found on our [Buddy Platform documentation](http://buddyplatform.com/docs).
+Each remaining REST verb is available for use through the Buddy SDK. All verbs function in a similar fashion; more detailed documentation can be found on our [Buddy Platform documentation](https://buddyplatform.com/docs).
 
 ### Working With Files
 
@@ -195,7 +195,7 @@ Our file example uses pictures. To download a picture specify BuddyFile as the o
       }
     });
 
-**Note:** Responses for files deviate from the standard Buddy response templates. See the [Buddy Platform documentation](http://buddyplatform.com/docs) for more information.
+**Note:** Responses for files deviate from the standard Buddy response templates. See the [Buddy Platform documentation](https://buddyplatform.com/docs) for more information.
 	
 ### Creating Response Objects
 
