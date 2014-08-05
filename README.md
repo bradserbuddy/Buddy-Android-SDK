@@ -6,7 +6,7 @@ Please refer to [buddyplatform.com/docs](https://buddyplatform.com/docs) for mor
 
 ## Introduction
 
-We realized most app developers end up writing the same code over and over again: user management, photo management, geolocation, check-ins, metadata, and other basic features. Buddy enables developers to build cloud-connected apps without having to write, test, manage or scale server-side code and infrastructure.
+We realized most app developers end up writing the same code over and over again: user management, photo management, geolocation, checkins, metadata, and other basic features. Buddy enables developers to build cloud-connected apps without having to write, test, manage or scale server-side code and infrastructure.
 
 Buddy's easy-to-use, scenario-focused APIs let you spend more time building your app and less time worrying about backend infrastructure.
 
@@ -17,13 +17,13 @@ This SDK is a thin wrapper over the Buddy REST API that takes care of the hard p
 * Parsing responses
 * Loading and saving credentials
 
-The remainder of the Buddy API is easily accessible via standard REST API calls.
+The remainder of the Buddy API is accessible via standard REST API calls.
 
 ## Getting Started
 
 To get started with the Buddy Platform SDK, please reference the _Getting Started_ series of documents at [buddyplatform.com/docs](https://buddyplatform.com/docs). You will need an App ID and Key before you can use the SDK. The _Getting Started_ documents will walk you through obtaining everything you need and show you where to find the SDK for your platform.
 
-App IDs and Keys can be obtained at the Buddy Developer Dashboard at [buddyplatform.com](https://buddyplatform.com/login).
+Application IDs and Keys are obtained at the Buddy Developer Dashboard at [buddyplatform.com](https://buddyplatform.com/login).
 
 Full documentation for Buddy's services are available at [buddyplatform.com/docs](https://buddyplatform.com/docs).
 
@@ -143,7 +143,6 @@ This sample searches app-level metadata by `keyPrefix` for any keys that start w
 In this example we will create a checkin. Take a look at the [Create Checkin documentation](https://buddyplatform.com/docs/Create%20Checkin/HTTP), then:
 
     // Create a checkin
-    // This sample demonstrates a callback instead of fetching the result from Future<T>
     Location location = getTheDeviceLocation();
     Map<String,Object> parameters = new HashMap<String,Object>();
     parameters.put("comment", "My first checkin");
@@ -162,15 +161,15 @@ In this example we will create a checkin. Take a look at the [Create Checkin doc
 
 #### PUT/PATCH/DELETE
 
-Each remaining REST verb is available for use through the Buddy SDK. All verbs function in a similar fashion; more detailed documentation can be found on our [Buddy Platform documentation](https://buddyplatform.com/docs).
+Each remaining REST verb is available through the Buddy SDK using the same pattern as the POST example.
 
 ### Working With Files
 
 Buddy offers support for binary files. The Android SDK works with files through our REST interface similarly to other API calls.
 
-#### Uploading A Picture
+#### Upload A File
 
-The Buddy Android SDK handles all necessary file management for you. The key class is `com.buddy.sdk.BuddyFile`, which is a wrapper around an Android `File` or `InputStream`, along with a MIME content type.
+The Buddy Android SDK handles all necessary file management for you. The key class is `com.buddy.sdk.BuddyFile`, which is a wrapper around an Android `File` or `InputStream`, along with a MIME content type. Here we demonstrate uploading a picture. For all binary files (e.g. blobs and videos), the pattern is the same, but with a different path and different parameters.
 
     BuddyFile file = new BuddyFile(new File("/some/image/foo.jpg"), "image/jpg");
     Map<String,Object> parameters = new HashMap<String,Object>();
@@ -183,9 +182,9 @@ The Buddy Android SDK handles all necessary file management for you. The key cla
         }
     });
 
-#### Downloading A File
+#### Download A File
 
-Our file example uses pictures. To download a picture specify BuddyFile as the operation type:
+Our download example uses pictures. To download a picture specify BuddyFile as the operation type:
 
     // Calling GET on "/pictures/{id}/file" returns a 302 response with a redirect URL that needs to be handled by your app
     Buddy.get(String.format("/pictures/%f/file", pictureId), null, new BuddyCallback<BuddyFile>(BuddyFile.class) {
