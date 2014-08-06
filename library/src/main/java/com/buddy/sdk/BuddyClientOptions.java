@@ -12,4 +12,7 @@ public class BuddyClientOptions {
     public String appVersion;
     public boolean synchronousMode;
     public String instanceName;
+
+    // Not serialized to persistent store
+    public String sharedSecret;
 }
