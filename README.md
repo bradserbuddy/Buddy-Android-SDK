@@ -91,7 +91,7 @@ If you need to have multiple clients, for example if you need to talk to multipl
     
 The `Buddy` static class is has the same signature as the `BuddyClient` class, and is shorthand for calling the most recently created client via a `Buddy.init()` call.
 
-### Create/Login Users
+### User Flow
 
 There are helper functions for creating, logging in, and logging out users:
 
@@ -120,24 +120,6 @@ There are helper functions for creating, logging in, and logging out users:
 	  
 Each SDK provides general wrappers that make REST calls to Buddy. For all the calls you can either create a wrapper java class such as those found in `com.buddy.sdk.models`, or you can simply pass a type of `JsonObject` to return a standard Gson JsonObject.
 
-#### GET
-
-This sample searches app-level metadata by `keyPrefix` for any keys that start with "dataPoint_". See [Search Metadata](https://buddyplatform.com/docs/Search%20Metadata) for a full list of parameters.
-
-    // Search Metadata by key prefix
-    Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put("keyPrefix", "dataPoint_");
-    Buddy.<JsonObject>get("/metadata/app", parameters, new BuddyCallback<JsonObject>(JsonObject.class) {
-      @Override
-      public void completed(BuddyResult<JsonObject> result) {
-        if (result.getIsSuccess()) {
-          JsonObject obj = result.getResult();
-          // Get the first result from the pageResults response (this assumes we have at least one result from the query)
-          String _d = obj.getMember("pagedResults")[0].getAsString();
-        }
-      }
-    });
-
 #### POST
 
 In this example we will create a checkin. Take a look at the [Create Checkin documentation](https://buddyplatform.com/docs/Create%20Checkin/HTTP), then:
@@ -159,9 +141,27 @@ In this example we will create a checkin. Take a look at the [Create Checkin doc
       }
     });
 
+#### GET
+
+This sample searches app-level metadata by `keyPrefix` for any keys that start with "dataPoint_". See [Search Metadata](https://buddyplatform.com/docs/Search%20Metadata) for a full list of parameters.
+
+    // Search Metadata by key prefix
+    Map<String, Object> parameters = new HashMap<String, Object>();
+    parameters.put("keyPrefix", "dataPoint_");
+    Buddy.<JsonObject>get("/metadata/app", parameters, new BuddyCallback<JsonObject>(JsonObject.class) {
+      @Override
+      public void completed(BuddyResult<JsonObject> result) {
+        if (result.getIsSuccess()) {
+          JsonObject obj = result.getResult();
+          // Get the first result from the pageResults response (this assumes we have at least one result from the query)
+          String _d = obj.getMember("pagedResults")[0].getAsString();
+        }
+      }
+    });
+
 #### PUT/PATCH/DELETE
 
-Each remaining REST verb is available through the Buddy SDK using the same pattern as the POST example.
+Each remaining REST verb is available through the Buddy SDK using the same pattern as the POST and GET examples.
 
 ### Working With Files
 
@@ -169,7 +169,7 @@ Buddy offers support for binary files. The Android SDK works with files through 
 
 #### Upload A File
 
-The Buddy Android SDK handles all necessary file management for you. The key class is `com.buddy.sdk.BuddyFile`, which is a wrapper around an Android `File` or `InputStream`, along with a MIME content type. Here we demonstrate uploading a picture. For all binary files (e.g. blobs and videos), the pattern is the same, but with a different path and different parameters.
+The Buddy Android SDK handles all necessary file management for you. The key class is `com.buddy.sdk.BuddyFile`, which is a wrapper around an Android `File` or `InputStream`, along with a MIME content type. Here we demonstrate uploading a picture. All binary files use the same pattern with a different path and different parameters. To upload a picture POST to
 
     BuddyFile file = new BuddyFile(new File("/some/image/foo.jpg"), "image/jpg");
     Map<String,Object> parameters = new HashMap<String,Object>();
@@ -184,9 +184,8 @@ The Buddy Android SDK handles all necessary file management for you. The key cla
 
 #### Download A File
 
-Our download example uses pictures. To download a picture specify BuddyFile as the operation type:
+To download a file send a GET request with BPFile as the operation type. This sample downloads the picture we uploaded in the "Upload File" example:
 
-    // Calling GET on "/pictures/{id}/file" returns a 302 response with a redirect URL that needs to be handled by your app
     Buddy.get(String.format("/pictures/%f/file", pictureId), null, new BuddyCallback<BuddyFile>(BuddyFile.class) {
       @Override
       public void completed(BuddyFile file) {
