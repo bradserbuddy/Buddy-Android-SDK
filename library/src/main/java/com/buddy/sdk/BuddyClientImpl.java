@@ -119,7 +119,7 @@ class BuddyClientImpl implements BuddyClient {
                     if (result.getIsSuccess()) {
                         AccessTokenResult atr = result.getResult();
 
-                        if(sharedSecret!=null && atr.serverSignature!=null) {
+                        if(sharedSecret!=null) {
                             String serverSig = makeServerDevicesSignature(app_key,sharedSecret);
                             if(!serverSig.equals(atr.serverSignature)) {
                                 callback.completed(result.convert(Boolean.FALSE), null);
