@@ -98,6 +98,12 @@ class BuddyClientImpl implements BuddyClient {
         }
     }
 
+
+    private String makeServerDevicesSignature(String apiKey, String Secret) {
+        String stringToSign = String.format("%s\n",apiKey);
+        return serviceClient.signString(stringToSign,Secret);
+    }
+
     public void getAccessToken(boolean autoRegister, final AccessTokenCallback callback) {
 
         String token = getSettings().getAccessToken();
@@ -113,6 +119,12 @@ class BuddyClientImpl implements BuddyClient {
                     if (result.getIsSuccess()) {
                         AccessTokenResult atr = result.getResult();
 
+                        if(sharedSecret!=null) {
+                            String serverSig = makeServerDevicesSignature(app_key,sharedSecret);
+                            if(!serverSig.equals(atr.serverSignature)) {
+                                callback.completed(result.convert(Boolean.FALSE), null);
+                            }
+                        }
                         BuddyClientSettings settings = getSettings();
 
                         settings.deviceToken = atr.accessToken;
@@ -219,6 +231,7 @@ class BuddyClientImpl implements BuddyClient {
         public String accessToken;
         public Date accessTokenExpires;
         public String serviceRoot;
+        public String serverSignature;
     }
 
     public static final String NoRegisterDevice = "__noregdevice";

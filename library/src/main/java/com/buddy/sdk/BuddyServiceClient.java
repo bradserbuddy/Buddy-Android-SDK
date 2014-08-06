@@ -99,7 +99,7 @@ class BuddyServiceClient {
     }
 
 
-    private String signString(String stringToSign,String secret) {
+    public String signString(String stringToSign,String secret) {
         try {
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
             SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
@@ -495,9 +495,6 @@ class BuddyServiceClient {
         }
         return promise;
     }
-
-
-
 
     protected  <T> Future<BuddyResult<T>> makeRequest(final String verb, final String path, final String sharedSecret,final String appID, final Map<String, Object> parameters, final BuddyCallback<T> callback, final Class<T> clazz) {
 
