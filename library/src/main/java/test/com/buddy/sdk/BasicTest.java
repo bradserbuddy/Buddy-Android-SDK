@@ -13,8 +13,10 @@ import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.test.InstrumentationTestCase;
+import android.util.Log;
 
 import com.buddy.sdk.Buddy;
+import com.buddy.sdk.BuddyCallback;
 import com.buddy.sdk.BuddyClient;
 import com.buddy.sdk.BuddyClientOptions;
 import com.buddy.sdk.models.Picture;
@@ -36,8 +38,8 @@ import java.util.concurrent.Future;
 public class BasicTest extends InstrumentationTestCase {
 
     private static final String TargetUrl = null;
-    private static final String AppId = "[your test app id]";
-    private static final String AppKey = "[your test app key]";
+    private static final String AppId = "bbbbbc.rcdbvlNmjKbj";
+    private static final String AppKey = "BDE88F15-D1DA-4DD2-BA8B-566B9F33385E";
 
     private BuddyClient getClient() {
         return getClient(AppId, AppKey, true);
@@ -100,8 +102,8 @@ public class BasicTest extends InstrumentationTestCase {
     }
 
     public void testLoginUser() throws Exception {
-        BuddyClient client = getClient();
 
+        BuddyClient client = getClient();
 
         Future<BuddyResult<User>> handle = client.loginUser("shawn", "password", null);
 
@@ -109,6 +111,23 @@ public class BasicTest extends InstrumentationTestCase {
         assertNotNull(result);
         assertNull(result.getError());
         assertEquals("shawn", result.getResult().userName);
+
+
+    }
+
+    public void testPatchDevice() throws Exception {
+
+
+        BuddyClient client = getClient();
+
+
+        Future<BuddyResult<Boolean>> handle = client.setPushToken("BPA91bF0Th8nRgxfhdENtWLyFWmAh9jZ3DZzIUtXvb7Z2yXpH-7B2H59BlDNy7ZigxcJS1V5rezbUFAyZreIQWaQz3MfJ61CmfDwK-cH9-1DaOQl3Kx0iptGWjZr1e5AxbYFMeHzFjI-kGCr6nrLUNeCEFkNXgnX101p0v-TmKDGguN6JXqWMAc", null);
+        BuddyResult<Boolean> result = handle.get();
+
+        assertNotNull(result);
+        assertNull(result.getError());
+        assertTrue(result.getResult());
+
     }
 
 

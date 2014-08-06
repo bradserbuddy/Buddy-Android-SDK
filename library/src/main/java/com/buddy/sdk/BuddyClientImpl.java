@@ -470,7 +470,7 @@ class BuddyClientImpl implements BuddyClient {
             @Override
             public void completed(BuddyResult<Object> result) {
                 if (callback != null) {
-                    callback.completed(result.convert(result.getIsSuccess()));
+                    callback.completed(result.<Boolean>convert(result.getIsSuccess()));
                 }
             }
         });
@@ -479,7 +479,7 @@ class BuddyClientImpl implements BuddyClient {
             @Override
             public void completed(BuddyFuture<BuddyResult<Object>> future) {
                 try {
-                    promise.setValue(future.get().convert(Boolean.TRUE));
+                    promise.setValue(future.get().<Boolean>convert(future.get().getIsSuccess()));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
