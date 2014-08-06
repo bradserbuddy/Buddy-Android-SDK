@@ -53,12 +53,12 @@ class BuddyServiceClient {
     public static final String PATCH = "PATCH";
     public static final String DELETE = "DELETE";
 
-    BuddyClient _parent;
+    BuddyClientImpl _parent;
     AsyncHttpClient client;
     static Map<String, Method> clientMethods = new HashMap<String,Method>();
     private boolean syncMode;
 
-    public BuddyServiceClient(BuddyClient parent) {
+    public BuddyServiceClient(BuddyClientImpl parent) {
         _parent = parent;
 
         setSynchronousMode(false);
@@ -119,13 +119,13 @@ class BuddyServiceClient {
 
     private String signRequest(String verb, String Path, String AppId, String Secret)
     {
-        String fulllPath = Path;
+        String fullPath = Path;
         if(!Path.startsWith("/"))
         {
-            fulllPath = String.format("/%s",Path);
+            fullPath = String.format("/%s",Path);
         }
 
-        String stringToSign = String.format("%s\n%s\n%s",verb.toUpperCase(),AppId,fulllPath);
+        String stringToSign = String.format("%s\n%s\n%s",verb.toUpperCase(),AppId,fullPath);
         return signString(stringToSign,Secret);
     }
 
@@ -496,7 +496,7 @@ class BuddyServiceClient {
         return promise;
     }
 
-    protected  <T> Future<BuddyResult<T>> makeRequest(final String verb, final String path, final String sharedSecret,final String appID, final Map<String, Object> parameters, final BuddyCallback<T> callback, final Class<T> clazz) {
+    protected  <T> Future<BuddyResult<T>> makeRequest(final String verb, final String path, final Map<String, Object> parameters, final BuddyCallback<T> callback, final Class<T> clazz) {
 
 
         boolean autoRegister = true;
@@ -531,9 +531,9 @@ class BuddyServiceClient {
 
                         String fullAccessToken=accessToken;
 
-                        if(fullAccessToken!=null && sharedSecret!=null)
+                        if(fullAccessToken!=null && _parent.getSharedSecret()!=null)
                         {
-                            String requestSig = signRequest(verb,path,appID,sharedSecret);
+                            String requestSig = signRequest(verb,path,_parent.getApp_id(),_parent.getSharedSecret());
                             if(requestSig!=null) {
                                 fullAccessToken = String.format("%s %s", fullAccessToken, requestSig);
                             }
