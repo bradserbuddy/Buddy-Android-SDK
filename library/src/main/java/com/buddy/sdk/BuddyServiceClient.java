@@ -1,6 +1,5 @@
 package com.buddy.sdk;
 
-
 import android.content.Context;
 import android.os.Looper;
 import android.util.Log;
@@ -16,6 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import java.net.URI;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,7 +41,8 @@ import org.apache.http.MethodNotSupportedException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.json.JSONObject;
-
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 
 class BuddyServiceClient {
@@ -88,6 +89,44 @@ class BuddyServiceClient {
             }
         }
         return client;
+    }
+
+    public static String toHexString(byte[] ba) {
+        StringBuilder str = new StringBuilder();
+        for(int i = 0; i < ba.length; i++)
+            str.append(String.format("%02x", ba[i]));
+        return str.toString();
+    }
+
+
+    private String signString(String stringToSign,String secret) {
+        try {
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+            sha256_HMAC.init(secret_key);
+
+            return toHexString(sha256_HMAC.doFinal(stringToSign.getBytes()));
+        }
+        catch(NoSuchAlgorithmException e)
+        {
+            return null;
+        }
+        catch(java.security.InvalidKeyException keyE)
+        {
+            return null;
+        }
+    }
+
+    private String signRequest(String verb, String Path, String AppId, String Secret)
+    {
+        String fulllPath = Path;
+        if(!Path.startsWith("/"))
+        {
+            fulllPath = String.format("/%s",Path);
+        }
+
+        String stringToSign = String.format("%s\n%s\n%s",verb.toUpperCase(),AppId,fulllPath);
+        return signString(stringToSign,Secret);
     }
 
     private static <T> BuddyResult<T> parseBuddyResponse(Class<T> type, int statusCode, String response) {
@@ -159,12 +198,7 @@ class BuddyServiceClient {
 
         final String url = String.format("%s/%s", root, path);
 
-        if (accessToken != null) {
-            headerList.add(new BasicHeader("Authorization", String.format("Buddy %s",accessToken)));
-        }
-
         final BuddyFuture<BuddyResult<T>> promise = new BuddyFuture<BuddyResult<T>>();
-
 
         Class rClass = clazz;
 
@@ -225,18 +259,31 @@ class BuddyServiceClient {
             }
         };
 
+        final RequestParams requestParams = new RequestParams();
 
-        Header[] headers = headerList.toArray(new Header[0]);
+        boolean isFile = resultClass != null && BuddyFile.class.isAssignableFrom(resultClass);
 
         headerList.add(new BasicHeader("Accept", DefaultContentType));
 
-        final RequestParams requestParams = new RequestParams();
+
+        if(isFile && verb.toUpperCase(Locale.getDefault()).equals(GET)) {
+            if( (accessToken!=null) && (parameters==null || !parameters.containsKey("accessToken")) ) {
+                requestParams.put("accessToken",accessToken);
+            }
+        }
+        else if (accessToken != null) {
+            headerList.add(new BasicHeader("Authorization", String.format("Buddy %s",accessToken)));
+        }
+
+        Header[] headers = headerList.toArray(new Header[0]);
+
+
         AsyncHttpClient httpClient = getHttpClient();
 
         if (verb.toUpperCase(Locale.getDefault()).equals(GET)) {
 
 
-            boolean isFile = resultClass != null && BuddyFile.class.isAssignableFrom(resultClass);
+
             if (parameters != null) {
                 for (Map.Entry<String, Object> cursor : parameters.entrySet()) {
                     requestParams.put(cursor.getKey(), cursor.getValue());
@@ -452,7 +499,7 @@ class BuddyServiceClient {
 
 
 
-    protected  <T> Future<BuddyResult<T>> makeRequest(final String verb, final String path, final Map<String, Object> parameters, final BuddyCallback<T> callback, final Class<T> clazz) {
+    protected  <T> Future<BuddyResult<T>> makeRequest(final String verb, final String path, final String sharedSecret,final String appID, final Map<String, Object> parameters, final BuddyCallback<T> callback, final Class<T> clazz) {
 
 
         boolean autoRegister = true;
@@ -484,7 +531,18 @@ class BuddyServiceClient {
                         promise.setValue(newResult);
                     }
                     else {
-                        final BuddyFuture<BuddyResult<T>> innerPromise = BuddyServiceClient.this.<T>makeRequestCore(verb, path, accessToken, parameters, callback, clazz);
+
+                        String fullAccessToken=accessToken;
+
+                        if(fullAccessToken!=null && sharedSecret!=null)
+                        {
+                            String requestSig = signRequest(verb,path,appID,sharedSecret);
+                            if(requestSig!=null) {
+                                fullAccessToken = String.format("%s %s", fullAccessToken, requestSig);
+                            }
+                        }
+
+                        final BuddyFuture<BuddyResult<T>> innerPromise = BuddyServiceClient.this.<T>makeRequestCore(verb, path, fullAccessToken, parameters, callback, clazz);
 
                         innerPromise.continueWith(new BuddyFutureCallback() {
                             @Override

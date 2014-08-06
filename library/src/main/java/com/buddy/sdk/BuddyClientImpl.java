@@ -37,6 +37,7 @@ class BuddyClientImpl implements BuddyClient {
     private Context context;
     private Location lastLocation;
     private UserAuthenticationRequiredCallback userAuthCallback;
+    private String sharedSecret; // Stored here and not in BuddyClientOptions as we dont want to serialize it to stable storage
 
     public BuddyClientImpl(Context context, String appId, String appKey){
         this(context, appId, appKey, null);
@@ -54,6 +55,8 @@ class BuddyClientImpl implements BuddyClient {
         }
         else {
             this.options = options;
+            this.sharedSecret = options.sharedSecret;
+            options.sharedSecret=null;
         }
 
         if (options.serviceRoot != null && settings.serviceRoot == null) {
@@ -150,56 +153,56 @@ class BuddyClientImpl implements BuddyClient {
 
     public <T> Future<BuddyResult<T>> get(String path, Map<String,Object> parameters, Class<T> clazz) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.GET, path, parameters, null, clazz);
+        return getServiceClient().makeRequest(BuddyServiceClient.GET, path, sharedSecret,app_id, parameters, null, clazz);
     }
 
     public <T> Future<BuddyResult<T>> get(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.GET, path, parameters, callback, null);
+        return getServiceClient().makeRequest(BuddyServiceClient.GET, path, sharedSecret,app_id,parameters, callback, null);
     }
 
 
     public <T> Future<BuddyResult<T>> post(String path, Map<String,Object> parameters, Class<T> clazz) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.POST, path, parameters, null, clazz);
+        return getServiceClient().makeRequest(BuddyServiceClient.POST, path, sharedSecret,app_id,parameters, null, clazz);
     }
 
     public <T> Future<BuddyResult<T>> post(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.POST, path, parameters, callback, null);
+        return getServiceClient().makeRequest(BuddyServiceClient.POST, path, sharedSecret,app_id,parameters, callback, null);
     }
 
 
     public <T> Future<BuddyResult<T>> patch(String path, Map<String,Object> parameters, Class<T> clazz) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.PATCH, path, parameters, null, clazz);
+        return getServiceClient().makeRequest(BuddyServiceClient.PATCH, path, sharedSecret,app_id, parameters, null, clazz);
     }
 
     public <T> Future<BuddyResult<T>> patch(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.PATCH, path, parameters, callback, null);
+        return getServiceClient().makeRequest(BuddyServiceClient.PATCH, path, sharedSecret,app_id, parameters, callback, null);
     }
 
 
     public <T> Future<BuddyResult<T>> delete(String path, Map<String,Object> parameters, Class<T> clazz) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.DELETE, path, parameters, null, clazz);
+        return getServiceClient().makeRequest(BuddyServiceClient.DELETE, path, sharedSecret,app_id, parameters, null, clazz);
     }
 
     public <T> Future<BuddyResult<T>> delete(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.DELETE, path, parameters, callback, null);
+        return getServiceClient().makeRequest(BuddyServiceClient.DELETE, path, sharedSecret,app_id, parameters, callback, null);
     }
 
 
     public <T> Future<BuddyResult<T>> put(String path, Map<String,Object> parameters,  Class<T> clazz) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.PUT, path, parameters, null, clazz);
+        return getServiceClient().makeRequest(BuddyServiceClient.PUT, path, sharedSecret,app_id, parameters, null, clazz);
     }
 
     public <T> Future<BuddyResult<T>> put(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.PUT, path, parameters, callback, null);
+        return getServiceClient().makeRequest(BuddyServiceClient.PUT, path, sharedSecret,app_id, parameters, callback, null);
     }
 
     private String getDeviceId() {
