@@ -72,7 +72,7 @@ Visit the [Buddy Dashboard](https://buddyplatform.com) to obtain your applicatio
     import com.buddy.sdk;
     // ...
     // Create the SDK client
-    BuddyClient client = Buddy.init(myContext, "appId", "appKey");
+    Buddy.init(myContext, "appId", "appKey");
     
 If you need to have multiple clients, for example if you need to talk to multiple users from your app, you can capture the result from `Buddy.init` and call through those clients:
 
@@ -101,8 +101,7 @@ There are helper functions for creating, logging in, and logging out users:
       @Override
       public void completed(BuddyResult<User> result) {
         if (result.getIsSuccess()) {
-          TextView tv = (TextView)findViewById(R.id.textView1);
-          tv.setText("Hello " + result.getResult().username);
+          Log.w(APP_LOG, "User created: " + result.getResult().userName);
         }
       }
     });
