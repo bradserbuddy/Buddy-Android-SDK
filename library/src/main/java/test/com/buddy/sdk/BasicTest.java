@@ -38,8 +38,8 @@ import java.util.concurrent.Future;
 public class BasicTest extends InstrumentationTestCase {
 
     private static final String TargetUrl = null;
-    private static final String AppId = "bbbbbc.rcdbvlNmjKbj";
-    private static final String AppKey = "BDE88F15-D1DA-4DD2-BA8B-566B9F33385E";
+    private static final String AppId = "\your app id";
+    private static final String AppKey = "\your app key";
 
     private BuddyClient getClient() {
         return getClient(AppId, AppKey, true);
