@@ -48,6 +48,7 @@ class JsonEnvelope<T> extends JsonEnvelopeBase {
         newEnvelope.error = error;
         newEnvelope.message = message;
         newEnvelope.errorCode = errorCode;
+        newEnvelope.result = newValue;
         return newEnvelope;
     }
 }

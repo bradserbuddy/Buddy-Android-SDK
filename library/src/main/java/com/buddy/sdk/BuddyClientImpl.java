@@ -37,6 +37,7 @@ class BuddyClientImpl implements BuddyClient {
     private Context context;
     private Location lastLocation;
     private UserAuthenticationRequiredCallback userAuthCallback;
+    private String sharedSecret; // Stored here and not in BuddyClientOptions as we dont want to serialize it to stable storage
 
     public BuddyClientImpl(Context context, String appId, String appKey){
         this(context, appId, appKey, null);
@@ -54,6 +55,8 @@ class BuddyClientImpl implements BuddyClient {
         }
         else {
             this.options = options;
+            this.sharedSecret = options.sharedSecret;
+            options.sharedSecret=null;
         }
 
         if (options.serviceRoot != null && settings.serviceRoot == null) {
@@ -95,6 +98,12 @@ class BuddyClientImpl implements BuddyClient {
         }
     }
 
+
+    private String makeServerDevicesSignature(String apiKey, String Secret) {
+        String stringToSign = String.format("%s\n",apiKey);
+        return serviceClient.signString(stringToSign,Secret);
+    }
+
     public void getAccessToken(boolean autoRegister, final AccessTokenCallback callback) {
 
         String token = getSettings().getAccessToken();
@@ -110,6 +119,12 @@ class BuddyClientImpl implements BuddyClient {
                     if (result.getIsSuccess()) {
                         AccessTokenResult atr = result.getResult();
 
+                        if(sharedSecret!=null) {
+                            String serverSig = makeServerDevicesSignature(app_key,sharedSecret);
+                            if(!serverSig.equals(atr.serverSignature)) {
+                                callback.completed(result.convert(Boolean.FALSE), null);
+                            }
+                        }
                         BuddyClientSettings settings = getSettings();
 
                         settings.deviceToken = atr.accessToken;
@@ -131,6 +146,13 @@ class BuddyClientImpl implements BuddyClient {
         }
     }
 
+    public String getApp_id() {
+        return app_id;
+    }
+
+    public String getSharedSecret() {
+        return sharedSecret;
+    }
     //
     // REST Stuff
     //
@@ -155,18 +177,18 @@ class BuddyClientImpl implements BuddyClient {
 
     public <T> Future<BuddyResult<T>> get(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.GET, path, parameters, callback, null);
+        return getServiceClient().makeRequest(BuddyServiceClient.GET, path,parameters, callback, null);
     }
 
 
     public <T> Future<BuddyResult<T>> post(String path, Map<String,Object> parameters, Class<T> clazz) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.POST, path, parameters, null, clazz);
+        return getServiceClient().makeRequest(BuddyServiceClient.POST, path,parameters, null, clazz);
     }
 
     public <T> Future<BuddyResult<T>> post(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.POST, path, parameters, callback, null);
+        return getServiceClient().makeRequest(BuddyServiceClient.POST, path,parameters, callback, null);
     }
 
 
@@ -216,6 +238,7 @@ class BuddyClientImpl implements BuddyClient {
         public String accessToken;
         public Date accessTokenExpires;
         public String serviceRoot;
+        public String serverSignature;
     }
 
     public static final String NoRegisterDevice = "__noregdevice";
@@ -447,7 +470,7 @@ class BuddyClientImpl implements BuddyClient {
             @Override
             public void completed(BuddyResult<Object> result) {
                 if (callback != null) {
-                    callback.completed(result.convert(result.getIsSuccess()));
+                    callback.completed(result.<Boolean>convert(result.getIsSuccess()));
                 }
             }
         });
@@ -456,7 +479,7 @@ class BuddyClientImpl implements BuddyClient {
             @Override
             public void completed(BuddyFuture<BuddyResult<Object>> future) {
                 try {
-                    promise.setValue(future.get().convert(Boolean.TRUE));
+                    promise.setValue(future.get().<Boolean>convert(future.get().getIsSuccess()));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {

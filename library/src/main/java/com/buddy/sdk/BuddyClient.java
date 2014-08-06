@@ -15,6 +15,7 @@ public interface BuddyClient{
     public void setLastLocation(Location loc);
     public Location getLastLocation();
     public String getServiceRoot();
+
     public <T> Future<BuddyResult<T>> get(String path, Map<String,Object> parameters, Class<T> clazz);
     public <T> Future<BuddyResult<T>> get(String path, Map<String,Object> parameters, final BuddyCallback<T> callback);
     public <T> Future<BuddyResult<T>> post(String path, Map<String,Object> parameters, Class<T> clazz);
