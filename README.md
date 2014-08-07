@@ -135,38 +135,41 @@ Each SDK provides general wrappers that make REST calls to Buddy. For all the ca
 In this example we will create a checkin. Take a look at the [Create Checkin documentation](https://buddyplatform.com/docs/Create%20Checkin/HTTP), then:
 
     // Create a checkin
-    Location location = getTheDeviceLocation();
+    Location location = new Location("");
+    location.setLatitude(47.61d);
+    location.setLongitude(-122.33d);
     Map<String,Object> parameters = new HashMap<String,Object>();
     parameters.put("comment", "My first checkin");
     parameters.put("description", "This is where I was doing that thing.");
-    parameters.put("location", String.format("%f,%f", location.getLatitude(), location.getLongitude());
+    parameters.put("location", String.format("%f,%f", location.getLatitude(), location.getLongitude()));
     Buddy.<JsonObject>post("/checkins", parameters, new BuddyCallback<JsonObject>(JsonObject.class) {
-      @Override
-      public void completed(BuddyResult<JsonObject> result) {
-        if (result.getIsSuccess()) {
-          JsonObject obj = result.getResult();
-          // get the ID of the created checkin.
-          String id = obj.getMember("id").getAsString();
+        @Override
+        public void completed(BuddyResult<JsonObject> result) {
+            if (result.getIsSuccess()) {
+                JsonObject obj = result.getResult();
+                // get the ID of the created checkin.
+                String id = obj.get("id").getAsString();
+            }
         }
-      }
     });
 
 #### GET
 
-This sample searches app-level metadata by `keyPrefix` for any keys that start with "dataPoint_". See [Search Metadata](https://buddyplatform.com/docs/Search%20Metadata) for a full list of parameters.
+This sample searches for the checkin we created in the POST example. See [Search Checkins](https://buddyplatform.com/docs/Search%20Checkins) for a full list of parameters.
 
-    // Search Metadata by key prefix
+    // Search for the checkin we created in the previous example
     Map<String, Object> parameters = new HashMap<String, Object>();
-    parameters.put("keyPrefix", "dataPoint_");
-    Buddy.<JsonObject>get("/metadata/app", parameters, new BuddyCallback<JsonObject>(JsonObject.class) {
-      @Override
-      public void completed(BuddyResult<JsonObject> result) {
-        if (result.getIsSuccess()) {
-          JsonObject obj = result.getResult();
-          // Get the first result from the pageResults response (this assumes we have at least one result from the query)
-          String _d = obj.getMember("pagedResults")[0].getAsString();
+    parameters.put("locationRange", "47.61, -122.33, 1500");
+    Buddy.<JsonObject>get("/checkins", parameters, new BuddyCallback<JsonObject>(JsonObject.class) {
+        @Override
+        public void completed(BuddyResult<JsonObject> result) {
+            if (result.getIsSuccess()) {
+                JsonObject obj = result.getResult();
+                // Get the pageResults response as a JsonArray
+                JsonArray _res = obj.get("pageResults").getAsJsonArray();
+                Log.w(APP_LOG, _res.toString());
+            }
         }
-      }
     });
 
 #### PUT/PATCH/DELETE
@@ -181,14 +184,16 @@ Buddy offers support for binary files. The Android SDK works with files through 
 
 The Buddy Android SDK handles all necessary file management for you. The key class is `com.buddy.sdk.BuddyFile`, which is a wrapper around an Android `File` or `InputStream`, along with a MIME content type. Here we demonstrate uploading a picture. All binary files use the same pattern with a different path and different parameters. To upload a picture POST to
 
-    BuddyFile file = new BuddyFile(new File("/some/image/foo.jpg"), "image/jpg");
+    BuddyFile buddyFile = new BuddyFile(new File(...), "image/jpg");
     Map<String,Object> parameters = new HashMap<String,Object>();
-    parameters.put("caption", "My first image");
-    parameters.put("data", file);
+    parameters.put("caption", "From Android");
+    parameters.put("data", buddyFile);
     Buddy.<Picture>post("/pictures", parameters, new BuddyCallback<Picture>(Picture.class){
         @Override
         public void completed(BuddyResult<Picture> result) {
-            if (result.getIsSuccess()) {...}
+            if (result.getIsSuccess()) {
+                Log.w(APP_LOG, "It worked!");
+            }
         }
     });
 
@@ -196,11 +201,12 @@ The Buddy Android SDK handles all necessary file management for you. The key cla
 
 To download a file send a GET request with BPFile as the operation type. This sample downloads the picture we uploaded in the "Upload File" example:
 
-    Buddy.get(String.format("/pictures/%f/file", pictureId), null, new BuddyCallback<BuddyFile>(BuddyFile.class) {
-      @Override
-      public void completed(BuddyFile file) {
-        // Do something with your picture!
-      }
+    Buddy.get(String.format("/pictures/%s/file", fileId), null, new BuddyCallback<BuddyFile>(BuddyFile.class) {
+        @Override
+        public void completed(BuddyResult<BuddyFile> file) {
+            // Do something with your picture!
+            Log.w(APP_LOG, file.getResult().getContentType());
+        }
     });
 
 **Note:** Responses for files deviate from the standard Buddy response templates. See the [Buddy Platform documentation](https://buddyplatform.com/docs) for more information.
