@@ -38,6 +38,8 @@ In your build.gradle file under 'src', add a line for the Buddy Android SDK depe
         Compile 'com.buddy:androidsdk:+'
     }
 
+Go to File > Project Structure and select the Project tab. Change the `Default Library Repository` from `jcenter()` to `mavenCentral`.
+
 This will install the latest release of the Buddy Android SDK.
 **Note:** If you wish to limit yourself to a narrower set of releases, you can do so like this (e.g. the latest release in the 0.1 series):
 
