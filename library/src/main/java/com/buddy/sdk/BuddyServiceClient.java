@@ -184,7 +184,7 @@ class BuddyServiceClient {
             fullPath = String.format("/%s",Path);
         }
 
-        String stringToSign = String.format("%s\n%s\n%s",verb.toUpperCase(),AppId,fullPath);
+        String stringToSign = String.format("%s\n%s\n%s",verb.toUpperCase(Locale.US),AppId,fullPath);
         return signString(stringToSign,Secret);
     }
 

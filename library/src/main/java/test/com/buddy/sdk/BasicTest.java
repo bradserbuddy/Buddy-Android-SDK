@@ -38,10 +38,11 @@ import java.util.concurrent.Future;
 public class BasicTest extends InstrumentationTestCase {
 
     private static final String TargetUrl = null;
-    private static final String AppId = "\your app id";
-    private static final String AppKey = "\your app key";
+    private static final String AppId = "your app id";
+    private static final String AppKey = "your app key";
 
     private BuddyClient getClient() {
+        Assert.fail("Please AppId/AppKey variables in BasicTest.java");
         return getClient(AppId, AppKey, true);
     }
 
