@@ -64,10 +64,15 @@ To build the SDK you need to:
 4.  Add the buddy-sdk-_version_.jar file as a dependency for your Android application.
 
 
-**Note:** You will have to add the following dependencies to the `dependencies { ... }` section of your application's build.gradle file:
+**Note:** You will have to add the following dependencies to the `dependencies { ... }` block of your application's build.gradle file:
 
-    compile 'com.loopj.android:android-async-http:1.4.5'
-    compile 'com.google.code.gson:gson:2.2.+'
+    // Sample dependencies block
+    dependencies {
+        compile 'com.loopj.android:android-async-http:1.4.5'
+        compile 'com.google.code.gson:gson:2.2.+'
+        compile fileTree(dir: 'libs', include: ['*.jar'])
+        compile files('libs/buddy-sdk-0.2.0.jar')
+    }
 
 ## Using the Android SDK
 
