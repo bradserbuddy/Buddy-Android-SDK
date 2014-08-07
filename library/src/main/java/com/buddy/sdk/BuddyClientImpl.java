@@ -123,6 +123,7 @@ class BuddyClientImpl implements BuddyClient {
                             String serverSig = makeServerDevicesSignature(app_key,sharedSecret);
                             if(!serverSig.equals(atr.serverSignature)) {
                                 callback.completed(result.convert(Boolean.FALSE), null);
+                                return;
                             }
                         }
                         BuddyClientSettings settings = getSettings();
