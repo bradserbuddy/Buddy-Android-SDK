@@ -61,7 +61,13 @@ To build the SDK you need to:
 1.  Clone this repository to your local machine
 2.  From the root of this repository, run `./gradlew build` (Mac/Linux) or `gradlew.bat build` (Windows) to build the SDK
 3.  Look in the **library/build/libs** folder to find the JARs.
-4.  Add The buddy-sdk-_version_.jar file as a dependency for your Android application.
+4.  Add the buddy-sdk-_version_.jar file as a dependency for your Android application.
+
+
+**Note:** You will have to add the following dependencies to the `dependencies { ... }` section of your application's build.gradle file:
+
+    compile 'com.loopj.android:android-async-http:1.4.5'
+    compile 'com.google.code.gson:gson:2.2.+'
 
 ## Using the Android SDK
 
@@ -114,9 +120,9 @@ There are helper functions for creating, logging in, and logging out users:
     
     // Logout is simple!
     Buddy.logoutUser();
-	
+  
 ### REST Interface
-	  
+    
 Each SDK provides general wrappers that make REST calls to Buddy. For all the calls you can either create a wrapper java class such as those found in `com.buddy.sdk.models`, or you can simply pass a type of `JsonObject` to return a standard Gson JsonObject.
 
 #### POST
@@ -193,7 +199,7 @@ To download a file send a GET request with BPFile as the operation type. This sa
     });
 
 **Note:** Responses for files deviate from the standard Buddy response templates. See the [Buddy Platform documentation](https://buddyplatform.com/docs) for more information.
-	
+  
 ### Creating Response Objects
 
 Creating strongly typed response objects is simple.  If the REST operation that you intend to call returns a response that's not available in `com.buddy.sdk.models`, you can easily create one by creating a Java object with fields that match the JSON response fields for the operation.
