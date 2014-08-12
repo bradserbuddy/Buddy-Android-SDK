@@ -42,7 +42,7 @@ public class BasicTest extends InstrumentationTestCase {
     private static final String AppKey = "your app key";
 
     private BuddyClient getClient() {
-        Assert.fail("Please AppId/AppKey variables in BasicTest.java");
+        Assert.fail("Please set your AppId/AppKey variables in BasicTest.java");
         return getClient(AppId, AppKey, true);
     }
 
