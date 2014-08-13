@@ -10,14 +10,12 @@ We realized most app developers end up writing the same code over and over again
 
 Buddy's easy-to-use, scenario-focused APIs let you spend more time building your app and less time worrying about backend infrastructure.
 
-This SDK is a thin wrapper over the Buddy REST API that takes care of the hard parts for you:
+The Android SDK handles the following functionality:
 
 * Building and formatting requests
 * Managing authentication
 * Parsing responses
 * Loading and saving credentials
-
-The remainder of the Buddy API is accessible via standard REST API calls.
 
 ## Getting Started
 
