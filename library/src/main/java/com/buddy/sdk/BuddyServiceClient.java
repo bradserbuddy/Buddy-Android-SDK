@@ -90,7 +90,7 @@ class BuddyServiceClient {
             }
 
             if (headers != null) patch.setHeaders(headers);
-            return sendRequest((DefaultHttpClient) getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
+            return sendRequest((DefaultHttpClient)getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
         }
 
         public RequestHandle delete(Context ctx, String url, Header[] headers, HttpEntity entity, String contentType, ResponseHandlerInterface responseHandler) {
@@ -101,7 +101,7 @@ class BuddyServiceClient {
             }
 
             if (headers != null) patch.setHeaders(headers);
-            return sendRequest((DefaultHttpClient) getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
+            return sendRequest((DefaultHttpClient)getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
         }
     }
 
@@ -115,7 +115,7 @@ class BuddyServiceClient {
             }
 
             if (headers != null) patch.setHeaders(headers);
-            return sendRequest((DefaultHttpClient) getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
+            return sendRequest((DefaultHttpClient)getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
         }
 
         public RequestHandle delete(Context ctx, String url, Header[] headers, HttpEntity entity, String contentType, ResponseHandlerInterface responseHandler) {
@@ -126,12 +126,12 @@ class BuddyServiceClient {
             }
 
             if (headers != null) patch.setHeaders(headers);
-            return sendRequest((DefaultHttpClient) getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
+            return sendRequest((DefaultHttpClient)getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
         }
     }
 
     AsyncHttpClient client;
-    static Map<String, Method> clientMethods = new HashMap<String, Method>();
+    static Map<String, Method> clientMethods = new HashMap<String,Method>();
     private boolean syncMode;
 
     public BuddyServiceClient(BuddyClientImpl parent) {

@@ -12,10 +12,8 @@ public class Picture extends BinaryModelBase {
         public int h;
     }
 
-    @SerializedName("title")
     public String title;
     public String caption;
-
-    @SerializedName("size")
-    public SizeInfo Size;
+    public SizeInfo size;
+    public String watermark;
 }
