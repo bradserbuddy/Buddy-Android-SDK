@@ -252,8 +252,8 @@ public class BasicTest extends InstrumentationTestCase {
         Picture picture = handle2.get().getResult();
         assertNotNull(handle2.get().getResult());
         assertEquals("From Android", picture.caption);
-        assertEquals(30,picture.Size.h);
-        assertEquals(30,picture.Size.w);
+        assertEquals(30,picture.size.h);
+        assertEquals(30,picture.size.w);
         assertEquals("The Title",picture.title);
 
         // now get the file.
