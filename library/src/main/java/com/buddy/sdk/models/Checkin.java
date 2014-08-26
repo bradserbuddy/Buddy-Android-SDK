@@ -15,6 +15,7 @@ public class Checkin extends ModelBase {
             super("Buddy");
         }
         public String name;
+        public String id;
     }
 
     public String comment;
