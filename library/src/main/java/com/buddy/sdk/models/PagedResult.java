@@ -26,9 +26,9 @@ public class PagedResult {
     public String nextToken;
     public String previousToken;
     public String currentToken;
-    public List<JsonElement> pageResults;
+    public List<JsonObject> pageResults;
 
-    public <T> List<T> ConvertPageResults(Type typeOfT) {
+    public <T extends ModelBase> List<T> ConvertPageResults(Type typeOfT) {
 
         List<T> result = new ArrayList<T>();
 
@@ -37,8 +37,9 @@ public class PagedResult {
         }
         Gson gson = JsonEnvelopeDeserializer.makeGsonDeserializer();
 
-        for(JsonElement jObj : pageResults){
+        for(JsonObject jObj : pageResults){
             T currentObj = gson.fromJson(jObj,typeOfT);
+            currentObj.setJsonObject(jObj);
             result.add(currentObj);
         }
         return result;
