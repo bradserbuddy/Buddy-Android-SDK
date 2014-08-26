@@ -42,8 +42,8 @@ import java.util.concurrent.Future;
 public class BasicTest extends InstrumentationTestCase {
 
     private static final String TargetUrl = null;
-    private static final String AppId = "your_appid";
-    private static final String AppKey = "your_appkey";
+    private static final String AppId = "bbbbbc.qlfbvGrhKlrm";
+    private static final String AppKey = "56F156FF-75B1-4504-9FA6-9CF4E72DF97E";
 
     private BuddyClient getClient() {
         return getClient(AppId, AppKey, true);
@@ -244,14 +244,18 @@ public class BasicTest extends InstrumentationTestCase {
 
         parameters.put("caption", "From Android");
         parameters.put("data", new BuddyFile(is, "image/png"));
-
+        parameters.put("title","The Title");
 
         Future<BuddyResult<Picture>> handle2 = client.<Picture>post("/pictures", parameters, Picture.class);
 
         handle2.get();
 
+        Picture picture = handle2.get().getResult();
         assertNotNull(handle2.get().getResult());
-        assertEquals("From Android", handle2.get().getResult().caption);
+        assertEquals("From Android", picture.caption);
+        assertEquals(30,picture.Size.h);
+        assertEquals(30,picture.Size.w);
+        assertEquals("The Title",picture.title);
 
         // now get the file.
         //
