@@ -609,7 +609,7 @@ class BuddyServiceClient {
 
                         if(fullAccessToken!=null && _parent.getSharedSecret()!=null)
                         {
-                            String requestSig = signRequest(verb,path,_parent.getApp_id(),_parent.getSharedSecret());
+                            String requestSig = signRequest(verb,path,_parent.getAppId(),_parent.getSharedSecret());
                             if(requestSig!=null) {
                                 fullAccessToken = String.format("%s %s", fullAccessToken, requestSig);
                             }

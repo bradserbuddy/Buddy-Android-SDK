@@ -25,7 +25,7 @@ public class Buddy {
 
     private static Map<String, BuddyClient> _clients = new HashMap<String, BuddyClient>();
 
-    private static String GetClientKey(String appId, BuddyClientOptions options)
+    private static String getClientKey(String appId, BuddyClientOptions options)
     {
         return appId + options.instanceName;
     }
@@ -44,7 +44,7 @@ public class Buddy {
 
         BuddyClient client = null;
 
-        String key = GetClientKey(appId, options);
+        String key = getClientKey(appId, options);
 
         if(_clients.containsKey(key))
         {

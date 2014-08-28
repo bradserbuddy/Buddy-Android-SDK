@@ -28,7 +28,7 @@ public class PagedResult {
     public String currentToken;
     public List<JsonObject> pageResults;
 
-    public <T extends ModelBase> List<T> ConvertPageResults(Type typeOfT) {
+    public <T extends ModelBase> List<T> convertPageResults(Type typeOfT) {
 
         List<T> result = new ArrayList<T>();
 
