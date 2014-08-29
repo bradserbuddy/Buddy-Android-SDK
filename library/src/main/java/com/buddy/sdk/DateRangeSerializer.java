@@ -22,7 +22,7 @@ public class DateRangeSerializer implements JsonSerializer<DateRange>{
     }
     @Override public JsonElement serialize(final DateRange dateRange, final Type typeOfSrc, final JsonSerializationContext context) {
        
-        String locString = String.format(Locale.US,"%d-%d", dateRange.getStart().getTime(), dateRange.getEnd().getTime());
+        String locString = serializeCore(dateRange);
 
         JsonElement result = new JsonPrimitive(locString);
         return result;

@@ -94,9 +94,9 @@ public class BuddyChatApplication extends Application {
 
             String regId = getRegistrationId(getBaseContext());
 
-            //if (regId.isEmpty()) {
+            if (regId.isEmpty()) {
                 registerInBackground();
-            //}
+            }
         }
     }
 
