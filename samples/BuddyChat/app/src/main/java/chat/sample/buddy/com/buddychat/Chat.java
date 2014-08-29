@@ -219,14 +219,7 @@ public class Chat extends ActionBarActivity {
         _messages.setAdapter(_adapter);
 
 
-        // finally, set up a timer to check status every 15 seconds.
-        timer = new Timer();
 
-        ChatUpdateTask task = new ChatUpdateTask(this);
-
-        // this is sort of for emulator only - push should always
-        // be supported otherwise, but in this case, check every 15 seconds
-        timer.schedule(task, 100, 15000);
 
         // tell the other client we are waiting on them.
         sendNotification(CHAT_WAITING, null, null);
@@ -426,6 +419,16 @@ public class Chat extends ActionBarActivity {
         // send a message letting the other client know that we are waiting
         //
         sendNotification(CHAT_WAITING, null, null);
+
+
+        // finally, set up a timer to check status every 15 seconds.
+        timer = new Timer();
+
+        ChatUpdateTask task = new ChatUpdateTask(this);
+
+        // this is sort of for emulator only - push should always
+        // be supported otherwise, but in this case, check every 15 seconds
+        timer.schedule(task, 100, 15000);
     }
 
     @Override
@@ -443,6 +446,9 @@ public class Chat extends ActionBarActivity {
 
         BuddyChatApplication.activeChat = null;
 
+        timer.cancel();
+        timer = null;
+
         super.onPause();
     }
 
@@ -459,6 +465,10 @@ public class Chat extends ActionBarActivity {
         public void run() {
             parent.runOnUiThread(new Runnable() {
                 public void run() {
+
+                    if (BuddyChatApplication.activeChat != this.parent) {
+                        return;
+                    }
 
                     if (!BuddyChatApplication.isPushSupported) {
                         // pretty much just for the emulator.
