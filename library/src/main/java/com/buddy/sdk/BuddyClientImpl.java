@@ -149,7 +149,7 @@ class BuddyClientImpl implements BuddyClient {
         }
     }
 
-    public String getApp_id() {
+    public String getAppId() {
         return app_id;
     }
 
