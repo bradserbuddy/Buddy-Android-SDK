@@ -20,7 +20,7 @@ import java.util.Date;
  */
 public class JsonEnvelopeDeserializer<T> implements JsonDeserializer<JsonEnvelope<Object>>
 {
-    private Class clazz;
+    private Class<T> clazz;
 
     private Gson gson;
 
