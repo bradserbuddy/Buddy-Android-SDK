@@ -14,5 +14,6 @@ public class BuddyLocation {
     public String fax;
     public String phone;
     public String website;
+    public String postalCode;
     public double distanceFromSearch;
 }
