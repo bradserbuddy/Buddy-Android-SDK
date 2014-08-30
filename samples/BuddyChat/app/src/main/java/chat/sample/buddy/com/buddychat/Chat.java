@@ -466,7 +466,7 @@ public class Chat extends ActionBarActivity {
             parent.runOnUiThread(new Runnable() {
                 public void run() {
 
-                    if (BuddyChatApplication.activeChat != this.parent) {
+                    if (BuddyChatApplication.activeChat != ChatUpdateTask.this.parent) {
                         return;
                     }
 
