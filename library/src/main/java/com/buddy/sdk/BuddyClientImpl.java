@@ -531,7 +531,15 @@ class BuddyClientImpl implements BuddyClient {
         return sendPushNotification(recipientIds, title, message, payload, -1);
     }
 
-    public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, String title, String message, String payload, int counterValue) {
+    public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, String title, String message, String payload, int counterValue){
+        return sendPushNotification(recipientIds, title, message, payload, counterValue, null);
+    }
+
+    public Future<BuddyResult<NotificationResult>> sendPushNotification(final List<String> recipientIds, final Map<String,Object> osCustomData){
+        return sendPushNotification(recipientIds, null, null, null, -1, osCustomData);
+    }
+
+    public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, String title, String message, String payload, int counterValue, Map<String,Object> osCustomData) {
         final Map<String,Object> params = new HashMap<String, Object>();
 
         params.put("recipients", recipientIds);
@@ -550,10 +558,15 @@ class BuddyClientImpl implements BuddyClient {
         if (counterValue >= 0) {
             params.put("counterValue", counterValue);
         }
+        if(osCustomData != null) {
+            params.put("osCustomData", osCustomData);
+        }
 
         // send the notification
         return Buddy.post("/notifications", params, NotificationResult.class);
     }
+
+
 
 
 
