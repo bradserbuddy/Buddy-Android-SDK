@@ -38,7 +38,6 @@ import java.util.concurrent.Future;
 
 public class BasicTest extends InstrumentationTestCase {
 
-    private static final String TargetUrl = null;
     private static final String AppId = "YOUR_APP_ID";
     private static final String AppKey = "YOUR_APP_KEY";
 
@@ -58,9 +57,8 @@ public class BasicTest extends InstrumentationTestCase {
 
         BuddyClientOptions options = new BuddyClientOptions();
         options.synchronousMode = syncMode;
-        options.serviceRoot = TargetUrl;
 
-        BuddyClient client = Buddy.init(null, appid == null ? "appid" : appid, appkey == null ? "appkey" : appkey, options);
+        BuddyClient client = Buddy.init(null, appid == null ? "bbbbbc.fakevlNmjKbj" : appid, appkey == null ? "BADBAD15-D1DA-4DD2-BA8B-566B9F33385E" : appkey, options);
 
         return client;
     }
@@ -85,8 +83,8 @@ public class BasicTest extends InstrumentationTestCase {
 
         BuddyResult<String> result = handle.get();
         assertNotNull(result);
-        assertEquals("ParameterIncorrectFormat", result.getError());
-        assertEquals("The given ID was not a valid BuddyID.", result.getErrorMessage());
+        assertEquals("AuthAppCredentialsInvalid", result.getError());
+        assertEquals("The supplied AppId or AppKey is invalid, please double check the values.", result.getErrorMessage());
         assertEquals(null, result.getResult());
     }
 
@@ -130,6 +128,27 @@ public class BasicTest extends InstrumentationTestCase {
         assertNotNull(result);
         assertNull(result.getError());
         assertTrue(result.getResult());
+    }
+
+    public void testPostCheckin() throws Exception {
+
+        final BuddyClient client = getClient();
+
+        Map<String,Object> parameters = new HashMap<String, Object>();
+        parameters.put("comment", "this is a test");
+        Location loc = new Location("BuddyTest");
+        loc.setLatitude(47);
+        loc.setLongitude(-122);
+        client.setLastLocation(loc);
+
+        Future<BuddyResult<Checkin>> handle = client.<Checkin>post("/checkins", parameters, Checkin.class);
+
+        client.setLastLocation(null);
+
+        Checkin checkin = handle.get().getResult();
+        assertNotNull(checkin.location);
+        assertEquals((int) 47.0, (int) checkin.location.getLatitude());
+        assertEquals((int) -122.0, (int) checkin.location.getLongitude());
     }
 
     public void testDeleteMetric() throws Exception {
