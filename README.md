@@ -43,7 +43,7 @@ Go to File > Project Structure and select the Project tab. Change the `Default L
 This will install the latest release of the Buddy Android SDK.
 **Note:** If you wish to limit yourself to a narrower set of releases, you can do so like this (e.g. the latest release in the 3.0.0 series):
 
-    compile 'com.buddy:androidsdk:3.0.+'
+    compile 'com.buddy:androidsdk:3.0.0+'
 
 At this point you will be able to import from com.buddy.sdk to access the Buddy Classes
 (e.g. import com.buddy.sdk.BuddyClient)
@@ -74,6 +74,7 @@ To build the SDK you need to:
         compile 'com.loopj.android:android-async-http:1.4.5'
         compile 'com.google.code.gson:gson:2.2.+'
         compile fileTree(dir: 'libs', include: ['*.jar'])
+        compile files('libs/buddy-sdk-0.2.0.jar')
     }
 
 You are now able to use the Buddy Android SDK in your application.
@@ -136,7 +137,7 @@ Each SDK provides general wrappers that make REST calls to Buddy. For all the ca
 
 #### POST
 
-In this example we will create a checkin. Take a look at the [Create Checkin documentation](https://buddyplatform.com/docs/Create%20Checkin/HTTP), then:
+In this example we'll create a checkin. Take a look at the [create checkin REST documentation](https://buddyplatform.com/docs/Checkins#CreateCheckin) then:
 
     // Create a checkin
     Location location = new Location("");
@@ -159,7 +160,7 @@ In this example we will create a checkin. Take a look at the [Create Checkin doc
 
 #### GET
 
-This sample searches for the checkin we created in the POST example. See [Search Checkins](https://buddyplatform.com/docs/Search%20Checkins) for a full list of parameters.
+We now can call GET to [search for the checkin](https://buddyplatform.com/docs/Checkins#SearchCheckins) we just created!
 
     // Search for the checkin we created in the previous example
     Map<String, Object> parameters = new HashMap<String, Object>();
@@ -184,9 +185,11 @@ Each remaining REST verb is available through the Buddy SDK using the same patte
 
 Buddy offers support for binary files. The Android SDK works with files through our REST interface similarly to other API calls.
 
+**Note:** Responses for files deviate from the standard Buddy response templates. See the [Buddy Platform documentation](https://buddyplatform.com/docs) for more information.
+
 #### Upload A File
 
-The Buddy Android SDK handles all necessary file management for you. The key class is `com.buddy.sdk.BuddyFile`, which is a wrapper around an Android `File` or `InputStream`, along with a MIME content type. Here we demonstrate uploading a picture. All binary files use the same pattern with a different path and different parameters. To upload a picture POST to
+Here we demonstrate uploading a picture. For all binary files (e.g. blobs and videos), the pattern is the same, but with a different path and different parameters. For full documentation see our [Media and Files](https://buddyplatform.com/docs/Media%20and%20Files) documentation page.
 
     BuddyFile buddyFile = new BuddyFile(new File(...), "image/jpg");
     Map<String,Object> parameters = new HashMap<String,Object>();
@@ -241,4 +244,3 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
-
