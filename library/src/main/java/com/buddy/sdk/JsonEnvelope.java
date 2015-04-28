@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
-class JsonEnvelope<T> extends JsonEnvelopeBase {
+public final class JsonEnvelope<T> extends JsonEnvelopeBase {
 	
 	public T result;
 

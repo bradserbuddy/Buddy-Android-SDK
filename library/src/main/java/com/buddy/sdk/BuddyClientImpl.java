@@ -29,12 +29,12 @@ import java.util.concurrent.Future;
  * Created by ryanbrandenburg on 7/31/14.
  */
 
-class BuddyClientImpl implements BuddyClient {
+public class BuddyClientImpl implements BuddyClient {
 
     private String app_id;
     private String app_key;
 
-    private BuddyServiceClient serviceClient;
+    private BuddyServiceClientImpl serviceClient;
     private BuddyClientOptions options;
     private Context context;
     private Location lastLocation;
@@ -60,9 +60,9 @@ class BuddyClientImpl implements BuddyClient {
             this.sharedSecret = options.sharedSecret;
             options.sharedSecret=null;
         }
-
-        if (options.serviceRoot != null && settings.serviceRoot == null) {
-            settings.serviceRoot = options.serviceRoot;
+        //if options was null this would always NPE
+        if (this.options.serviceRoot != null && settings.serviceRoot == null) {
+            settings.serviceRoot = this.options.serviceRoot;
         }
         getServiceClient();
     }
@@ -167,7 +167,7 @@ class BuddyClientImpl implements BuddyClient {
     BuddyServiceClient getServiceClient() {
 
         if (serviceClient == null) {
-            serviceClient = new BuddyServiceClient(this);
+            serviceClient = new BuddyServiceClientImpl(this);
             serviceClient.setSynchronousMode(options.synchronousMode);
         }
         return serviceClient;
@@ -621,7 +621,7 @@ class BuddyClientImpl implements BuddyClient {
     {
         if (context != null) {
 
-            return context.getSharedPreferences(String.format("com.buddy-%s-%s", app_id, options == null ? null : options.settingsPrefix), Context.MODE_PRIVATE);
+            return context.getSharedPreferences(String.format("com.buddy-%s-%s", app_id, options == null ? "" : options.settingsPrefix), Context.MODE_PRIVATE);
         }
         return null;
     }

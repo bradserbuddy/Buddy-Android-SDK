@@ -1,5 +1,5 @@
 
-package test.com.buddy.sdk;
+package com.buddy.sdk;
 
 
 import android.graphics.Bitmap;
@@ -26,6 +26,7 @@ import com.buddy.sdk.models.Picture;
 import com.buddy.sdk.models.User;
 import com.buddy.sdk.BuddyFile;
 import com.buddy.sdk.BuddyResult;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 
 import junit.framework.Assert;
@@ -142,6 +143,7 @@ public class BasicTest extends InstrumentationTestCase {
 
     }
 
+
     public void testDelete() throws Exception {
 
 
@@ -152,6 +154,16 @@ public class BasicTest extends InstrumentationTestCase {
 
         assertNotNull(result);
         assertEquals("ParameterIncorrectFormat", result.getError());
+    }
+
+    public void testPostNotifications() throws  Exception{
+        BuddyClient client = getClient();
+        client.createUser("tempuser", "password", null, null, null, null, null, null, null);
+        client.post("/notifications", new HashMap<String, Object>(){{
+            put("title", "Test");
+            put("recipients", Lists.newArrayList("testValue"));
+        }}, HashMap.class);
+
     }
 
 
