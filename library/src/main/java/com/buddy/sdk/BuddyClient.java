@@ -38,6 +38,7 @@ public interface BuddyClient{
     public Future<BuddyResult<Boolean>> setPushToken(String pushToken, final BuddyCallback<Boolean> callback);
     public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, String title, String message, String payload);
     public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, String title, String message, String payload, int counterValue);
+    public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, Map<String,Object> osCustomData);
     public void recordNotificationReceived(Intent message);
     void handleError(BuddyResult result);
     void getAccessToken(boolean autoRegister, final AccessTokenCallback callback);

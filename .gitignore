@@ -1,3 +1,4 @@
+library/src/main/gen/*
 library/build
 .idea
 .gradle

@@ -176,6 +176,10 @@ public class Buddy {
          return getCurrentClient().sendPushNotification(recipientIds, title, message, payload, counterValue);
     }
 
+    public static Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, Map<String,Object> osCustomData){
+        return getCurrentClient().sendPushNotification(recipientIds, osCustomData);
+    }
+
     public static void recordNotificationReceived(Intent message)
     {
         getCurrentClient().recordNotificationReceived(message);

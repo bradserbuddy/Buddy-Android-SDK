@@ -29,12 +29,12 @@ import java.util.concurrent.Future;
  * Created by ryanbrandenburg on 7/31/14.
  */
 
-class BuddyClientImpl implements BuddyClient {
+public class BuddyClientImpl implements BuddyClient {
 
     private String app_id;
     private String app_key;
 
-    private BuddyServiceClient serviceClient;
+    private BuddyServiceClientImpl serviceClient;
     private BuddyClientOptions options;
     private Context context;
     private Location lastLocation;
@@ -60,9 +60,9 @@ class BuddyClientImpl implements BuddyClient {
             this.sharedSecret = options.sharedSecret;
             options.sharedSecret=null;
         }
-
-        if (options.serviceRoot != null && settings.serviceRoot == null) {
-            settings.serviceRoot = options.serviceRoot;
+        //if options was null this would always NPE
+        if (this.options.serviceRoot != null && settings.serviceRoot == null) {
+            settings.serviceRoot = this.options.serviceRoot;
         }
         getServiceClient();
     }
@@ -167,7 +167,7 @@ class BuddyClientImpl implements BuddyClient {
     BuddyServiceClient getServiceClient() {
 
         if (serviceClient == null) {
-            serviceClient = new BuddyServiceClient(this);
+            serviceClient = new BuddyServiceClientImpl(this);
             serviceClient.setSynchronousMode(options.synchronousMode);
         }
         return serviceClient;
@@ -531,7 +531,15 @@ class BuddyClientImpl implements BuddyClient {
         return sendPushNotification(recipientIds, title, message, payload, -1);
     }
 
-    public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, String title, String message, String payload, int counterValue) {
+    public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, String title, String message, String payload, int counterValue){
+        return sendPushNotification(recipientIds, title, message, payload, counterValue, null);
+    }
+
+    public Future<BuddyResult<NotificationResult>> sendPushNotification(final List<String> recipientIds, final Map<String,Object> osCustomData){
+        return sendPushNotification(recipientIds, null, null, null, -1, osCustomData);
+    }
+
+    public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, String title, String message, String payload, int counterValue, Map<String,Object> osCustomData) {
         final Map<String,Object> params = new HashMap<String, Object>();
 
         params.put("recipients", recipientIds);
@@ -550,10 +558,15 @@ class BuddyClientImpl implements BuddyClient {
         if (counterValue >= 0) {
             params.put("counterValue", counterValue);
         }
+        if(osCustomData != null) {
+            params.put("osCustomData", osCustomData);
+        }
 
         // send the notification
         return Buddy.post("/notifications", params, NotificationResult.class);
     }
+
+
 
 
 
@@ -608,7 +621,7 @@ class BuddyClientImpl implements BuddyClient {
     {
         if (context != null) {
 
-            return context.getSharedPreferences(String.format("com.buddy-%s-%s", app_id, options == null ? null : options.settingsPrefix), Context.MODE_PRIVATE);
+            return context.getSharedPreferences(String.format("com.buddy-%s-%s", app_id, options == null ? "" : options.settingsPrefix), Context.MODE_PRIVATE);
         }
         return null;
     }
