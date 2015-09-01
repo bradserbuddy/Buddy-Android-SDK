@@ -1,10 +1,9 @@
-package chat.sample.buddy.com.buddychat;
+package com.buddy.sample.buddychat;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,23 +15,18 @@ import com.buddy.sdk.BuddyCallback;
 import com.buddy.sdk.BuddyResult;
 import com.buddy.sdk.models.User;
 
-import chat.sample.buddy.com.buddychat.R;
-
-//
-// Sign up a new user
-//
-public class Signup extends ActionBarActivity {
+public class SignupNewUser extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        final EditText editUsername = (EditText)findViewById(R.id.editUserName);
-        final EditText editPassword = (EditText)findViewById(R.id.editPassword);
-        final EditText editName = (EditText)findViewById(R.id.editName);
+        final EditText editUsername = (EditText) findViewById(R.id.editUserName);
+        final EditText editPassword = (EditText) findViewById(R.id.editPassword);
+        final EditText editName = (EditText) findViewById(R.id.editName);
 
-        final Button btnSignup = (Button)super.findViewById(R.id.btnSignup);
+        final Button btnSignup = (Button) super.findViewById(R.id.btnSignup);
 
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +63,7 @@ public class Signup extends ActionBarActivity {
                                     finish();
                                 } else {
                                     // Username or password false, display and an error
-                                    final AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(Signup.this);
+                                    final AlertDialog.Builder dlgAlert = new AlertDialog.Builder(SignupNewUser.this);
 
                                     dlgAlert.setMessage(String.format("%s", result.getError()));
                                     dlgAlert.setTitle("Error Creating User");
@@ -77,10 +71,10 @@ public class Signup extends ActionBarActivity {
                                     dlgAlert.setCancelable(true);
                                     dlgAlert.create().show();
 
-                                    dlgAlert.setPositiveButton("Ok",null);
+                                    dlgAlert.setPositiveButton("Ok", null);
                                 }
                             }
-                });
+                        });
             }
         });
 

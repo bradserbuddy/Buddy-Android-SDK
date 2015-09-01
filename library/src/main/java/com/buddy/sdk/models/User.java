@@ -2,9 +2,6 @@ package com.buddy.sdk.models;
 
 import java.util.Date;
 
-/**
- * Created by shawn on 7/6/14.
- */
 public class User  extends ModelBase {
 
     public static final String GENDER_MALE = "male";

@@ -2,15 +2,13 @@ package com.buddy.sdk;
 
 import android.content.Context;
 
-import com.buddy.sdk.*;
-import com.buddy.sdk.NetworkIsolatedBuddyClient;
 import com.google.common.collect.Lists;
 
 import junit.framework.TestCase;
+
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -19,19 +17,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.verify;
-import static org.hamcrest.Matchers.hasEntry;
+import static org.mockito.Mockito.when;
 
-
-
-/**
- * Created by tyler on 4/27/15.
- */
 public class ServiceClientTest extends TestCase {
 
     private static final String TEST_APP_ID = "bbbb.ccdd";

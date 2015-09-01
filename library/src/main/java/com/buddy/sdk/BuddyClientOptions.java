@@ -1,8 +1,5 @@
 package com.buddy.sdk;
 
-/**
- * Created by shawn on 7/8/14.
- */
 public class BuddyClientOptions {
 
     public String settingsPrefix;

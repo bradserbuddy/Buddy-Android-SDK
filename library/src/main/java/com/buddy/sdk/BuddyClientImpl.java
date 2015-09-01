@@ -1,11 +1,13 @@
 package com.buddy.sdk;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
@@ -24,10 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
-/**
- * Created by ryanbrandenburg on 7/31/14.
- */
 
 public class BuddyClientImpl implements BuddyClient {
 
@@ -160,8 +158,7 @@ public class BuddyClientImpl implements BuddyClient {
     // REST Stuff
     //
     public String getServiceRoot() {
-        return
-                getSettings().getServiceRoot();
+        return getSettings().getServiceRoot();
     }
 
     BuddyServiceClient getServiceClient() {
@@ -578,12 +575,9 @@ public class BuddyClientImpl implements BuddyClient {
         }
     }
 
-
     private static String DefaultRoot = "https://api.buddyplatform.com";
 
     private class BuddyClientSettings {
-
-
 
         public String serviceRoot;
         public String deviceToken;
@@ -626,6 +620,7 @@ public class BuddyClientImpl implements BuddyClient {
         return null;
     }
 
+    @SuppressLint("CommitPrefEdits")
     private void saveSettings() {
         SharedPreferences preferences = getPreferences();
 
