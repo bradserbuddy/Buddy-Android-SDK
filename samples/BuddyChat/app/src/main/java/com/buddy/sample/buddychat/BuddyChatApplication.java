@@ -28,10 +28,8 @@ public class BuddyChatApplication extends Application {
      * Substitute your Buddy app's App ID and App Key here. You can create a Buddy app
      * at http://dev.buddyplatform.com. For more details see the accompanying README.md.
      */
-    public static final String APPID = "bbbbbc.hKpFwzglHBrK";
-    public static final String APPKEY = "616bf446-f005-fe9a-9fd4-e62ba8913bf5";
-    //public static final String APPID = "MY_APP_ID";
-    //public static final String APPKEY = "MY_APP_KEY";
+    public static final String APPID = "MY_APP_ID";
+    public static final String APPKEY = "MY_APP_KEY";
 
 
     public static BuddyChatApplication instance;

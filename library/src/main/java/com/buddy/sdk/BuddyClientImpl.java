@@ -71,7 +71,9 @@ public class BuddyClientImpl implements BuddyClient {
 
         getServiceClient();
 
-        this.connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (context != null) {
+            this.connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        }
     }
 
     public void setUserAuthenticationRequiredCallback(UserAuthenticationRequiredCallback callback) {
@@ -753,6 +755,13 @@ public class BuddyClientImpl implements BuddyClient {
     }
 
     private ConnectivityLevel getConnectivityType() {
+
+        if (this.connectivityManager == null) {
+            // If we have no connectivity manager, assume we are connected; API failures need to be handled regardless.
+            // Connectivity manager is unavailable during unit tests.
+            return ConnectivityLevel.Connected;
+        }
+
         NetworkInfo networkInfo = this.connectivityManager.getActiveNetworkInfo();
         int networkInfoType = networkInfo.getType();
 
