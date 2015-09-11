@@ -83,7 +83,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
             }
 
             if (headers != null) patch.setHeaders(headers);
-            return sendRequest((DefaultHttpClient)getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
+            return sendRequest((DefaultHttpClient) getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
         }
 
         public RequestHandle delete(Context ctx, String url, Header[] headers, HttpEntity entity, String contentType, ResponseHandlerInterface responseHandler) {
@@ -94,7 +94,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
             }
 
             if (headers != null) patch.setHeaders(headers);
-            return sendRequest((DefaultHttpClient)getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
+            return sendRequest((DefaultHttpClient) getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
         }
     }
 
@@ -108,7 +108,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
             }
 
             if (headers != null) patch.setHeaders(headers);
-            return sendRequest((DefaultHttpClient)getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
+            return sendRequest((DefaultHttpClient) getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
         }
 
         public RequestHandle delete(Context ctx, String url, Header[] headers, HttpEntity entity, String contentType, ResponseHandlerInterface responseHandler) {
@@ -119,12 +119,12 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
             }
 
             if (headers != null) patch.setHeaders(headers);
-            return sendRequest((DefaultHttpClient)getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
+            return sendRequest((DefaultHttpClient) getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
         }
     }
 
     AsyncHttpClient client;
-    static Map<String, Method> clientMethods = new HashMap<String,Method>();
+    static Map<String, Method> clientMethods = new HashMap<String, Method>();
     private boolean syncMode;
 
     public BuddyServiceClientImpl(BuddyClientImpl parent) {
@@ -210,8 +210,8 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
 
     static Gson makeRequestSerializer() {
         return new GsonBuilder()
-                .registerTypeAdapter(Location.class,new BuddyLocationSerializer())
-                .registerTypeAdapter(LocationRange.class,new BuddyLocationRangeSerializer())
+                .registerTypeAdapter(Location.class, new BuddyLocationSerializer())
+                .registerTypeAdapter(LocationRange.class, new BuddyLocationRangeSerializer())
                 .registerTypeAdapter(DateRange.class, new DateRangeSerializer())
                 .create();
     }
@@ -239,8 +239,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
                     ResponseHandlerInterface.class
             );
 
-        }
-        catch (NoSuchMethodException nsmEx) {
+        } catch (NoSuchMethodException nsmEx) {
             m = null;
         }
 
@@ -258,21 +257,20 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
 
     private Object convertParameter(Object val) {
         if (val instanceof DateRange) {
-            return DateRangeSerializer.serializeCore((DateRange)val);
-        }
-        else if (val instanceof LocationRange) {
-            return BuddyLocationRangeSerializer.serializeCore((LocationRange)val);
+            return DateRangeSerializer.serializeCore((DateRange) val);
+        } else if (val instanceof LocationRange) {
+            return BuddyLocationRangeSerializer.serializeCore((LocationRange) val);
         }
         return val;
     }
 
 
-    private <T> BuddyFuture<BuddyResult<T>> makeRequestCore(String verb, String path, final String accessToken, final Map<? extends String,? extends Object> parameters, final BuddyCallback<T> callback, final Class<T> clazz) {
+    private <T> BuddyFuture<BuddyResult<T>> makeRequestCore(String verb, String path, final String accessToken, final Map<? extends String, ? extends Object> parameters, final BuddyCallback<T> callback, final Class<T> clazz) {
         List<Header> headerList = new ArrayList<Header>();
         String root = _parent.getServiceRoot();
 
         if (root.endsWith("/")) {
-            root = root.substring(0, root.length()-1);
+            root = root.substring(0, root.length() - 1);
         }
 
         if (path.startsWith("/")) {
@@ -314,8 +312,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
                 if (errorResponse != null) {
                     env = new JsonEnvelope<T>(errorResponse, null);
                     logResult(errorResponse);
-                }
-                else {
+                } else {
                     env = new JsonEnvelope<T>();
                     env.error = "NoInternetConnection";
                     env.message = "No internet connection is available.";
@@ -349,13 +346,12 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
         headerList.add(new BasicHeader("Accept", DefaultContentType));
 
 
-        if(isFile && verb.toUpperCase(Locale.getDefault()).equals(GET)) {
-            if( (accessToken!=null) && (parameters==null || !parameters.containsKey("accessToken")) ) {
-                requestParams.put("accessToken",accessToken);
+        if (isFile && verb.toUpperCase(Locale.getDefault()).equals(GET)) {
+            if ((accessToken != null) && (parameters == null || !parameters.containsKey("accessToken"))) {
+                requestParams.put("accessToken", accessToken);
             }
-        }
-        else if (accessToken != null) {
-            headerList.add(new BasicHeader("Authorization", String.format("Buddy %s",accessToken)));
+        } else if (accessToken != null) {
+            headerList.add(new BasicHeader("Authorization", String.format("Buddy %s", accessToken)));
         }
 
         Header[] headers = headerList.toArray(new Header[0]);
@@ -364,7 +360,6 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
         AsyncHttpClient httpClient = getHttpClient();
 
         if (verb.toUpperCase(Locale.getDefault()).equals(GET)) {
-
 
 
             if (parameters != null) {
@@ -411,8 +406,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
                 };
             }
             httpClient.get(null, url, headers, requestParams, handler);
-        }
-        else {
+        } else {
 
             // loop through and pull out any files.
             //
@@ -465,6 +459,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
                             }
 
                             private boolean ups;
+
                             @Override
                             public boolean getUsePoolThread() {
                                 return ups;
@@ -476,6 +471,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
                             }
 
                             private Object tag;
+
                             @Override
                             public Object getTag() {
                                 return tag;
@@ -579,8 +575,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
             if (methodToInvoke == null) {
 
                 jsonHandler.onFailure(0, new Header[0], "", new MethodNotSupportedException("Verb " + verb + " not supported."));
-            }
-            else {
+            } else {
                 try {
                     try {
 
@@ -631,46 +626,44 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
 
         // get the access token.
         //
-        _parent.getAccessToken(autoRegister, new AccessTokenCallback(){
+        _parent.getAccessToken(autoRegister, new AccessTokenCallback() {
 
-                @Override
-                public void completed(BuddyResult<Boolean> error, final String accessToken) {
+                    @Override
+                    public void completed(BuddyResult<Boolean> error, final String accessToken) {
 
-                    if (error != null) {
-                        // propagate the error
-                        BuddyResult<T> newResult = error.convert((T)null);
-                        if (callback != null) callback.completed(newResult);
-                        promise.setValue(newResult);
-                    }
-                    else {
+                        if (error != null) {
+                            // propagate the error
+                            BuddyResult<T> newResult = error.convert((T) null);
+                            if (callback != null) callback.completed(newResult);
+                            promise.setValue(newResult);
+                        } else {
 
-                        String fullAccessToken=accessToken;
+                            String fullAccessToken = accessToken;
 
-                        if(fullAccessToken!=null && _parent.getSharedSecret()!=null)
-                        {
-                            String requestSig = signRequest(verb,path,_parent.getAppId(),_parent.getSharedSecret());
-                            if(requestSig!=null) {
-                                fullAccessToken = String.format("%s %s", fullAccessToken, requestSig);
-                            }
-                        }
-
-                        final BuddyFuture<BuddyResult<T>> innerPromise = BuddyServiceClientImpl.this.<T>makeRequestCore(verb, path, fullAccessToken, parameters, callback, clazz);
-
-                        innerPromise.continueWith(new BuddyFutureCallback() {
-                            @Override
-                            public void completed(BuddyFuture future) {
-                                try {
-                                    promise.setValue(innerPromise.get());
-                                } catch (InterruptedException e) {
-
-                                } catch (ExecutionException e) {
-
+                            if (fullAccessToken != null && _parent.getSharedSecret() != null) {
+                                String requestSig = signRequest(verb, path, _parent.getAppId(), _parent.getSharedSecret());
+                                if (requestSig != null) {
+                                    fullAccessToken = String.format("%s %s", fullAccessToken, requestSig);
                                 }
                             }
-                        });
+
+                            final BuddyFuture<BuddyResult<T>> innerPromise = BuddyServiceClientImpl.this.<T>makeRequestCore(verb, path, fullAccessToken, parameters, callback, clazz);
+
+                            innerPromise.continueWith(new BuddyFutureCallback() {
+                                @Override
+                                public void completed(BuddyFuture future) {
+                                    try {
+                                        promise.setValue(innerPromise.get());
+                                    } catch (InterruptedException e) {
+
+                                    } catch (ExecutionException e) {
+
+                                    }
+                                }
+                            });
+                        }
                     }
                 }
-            }
         );
         return promise;
 

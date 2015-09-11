@@ -14,6 +14,7 @@ import java.util.concurrent.Future;
 
 public interface BuddyClient{
     public void setUserAuthenticationRequiredCallback(UserAuthenticationRequiredCallback callback);
+    public void setConnectivityLevelChangedCallback(ConnectivityLevelChangedCallback callback);
     public void setLastLocation(Location loc);
     public Location getLastLocation();
     public String getServiceRoot();

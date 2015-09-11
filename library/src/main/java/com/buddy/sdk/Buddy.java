@@ -116,6 +116,11 @@ public class Buddy {
         getCurrentClient().setUserAuthenticationRequiredCallback(callback);
     }
 
+    public static void setConnectivityLevelChangedCallback(ConnectivityLevelChangedCallback callback)
+    {
+        getCurrentClient().setConnectivityLevelChangedCallback(callback);
+    }
+
     public static void setLastLocation(Location loc){
         getCurrentClient().setLastLocation(loc);
     }

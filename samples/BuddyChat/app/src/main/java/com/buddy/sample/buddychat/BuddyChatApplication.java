@@ -7,8 +7,13 @@ import android.content.res.Configuration;
 import com.buddy.sdk.Buddy;
 import com.buddy.sdk.BuddyCallback;
 import com.buddy.sdk.BuddyResult;
+import com.buddy.sdk.ConnectivityLevel;
+import com.buddy.sdk.ConnectivityLevelChangedCallback;
 import com.buddy.sdk.UserAuthenticationRequiredCallback;
 import com.buddy.sdk.models.User;
+import android.widget.Toast;
+import android.os.Looper;
+import android.view.Gravity;
 
 public class BuddyChatApplication extends Application {
 
@@ -61,6 +66,19 @@ public class BuddyChatApplication extends Application {
                 Intent loginIntent = new Intent(BuddyChatApplication.this, Login.class);
                 loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(loginIntent);
+            }
+        });
+
+        Buddy.setConnectivityLevelChangedCallback(new ConnectivityLevelChangedCallback() {
+            @Override
+            public void connectivityLevelChanged(ConnectivityLevel level) {
+            String message = getResources().getString((level == ConnectivityLevel.None) ?
+                    R.string.connection_lost :
+                    R.string.reconnected);
+
+            Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.TOP, 0, 0);
+            toast.show();
             }
         });
     }
