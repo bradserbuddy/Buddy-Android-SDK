@@ -741,7 +741,7 @@ public class BuddyClientImpl implements BuddyClient {
             }
 
             private int getRetryInterval(int retryCount) {
-                assert (retryCount > 0);
+                if (BuildConfig.DEBUG && !(retryCount > 0)) { throw new AssertionError(); }
 
                 final int retryCapInMilliseconds = 30000;
                 final int retryBaseInMilliseconds = 500;
