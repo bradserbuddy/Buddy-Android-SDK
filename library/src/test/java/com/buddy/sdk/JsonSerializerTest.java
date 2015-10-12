@@ -3,17 +3,13 @@ package com.buddy.sdk;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
-import com.google.gson.JsonSerializer;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by tyler on 4/29/15.
- */
+import static org.junit.Assert.assertTrue;
 
 public class JsonSerializerTest {
 

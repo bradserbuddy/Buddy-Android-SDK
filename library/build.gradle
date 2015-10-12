@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 
-
 archivesBaseName = 'buddy-sdk'
 
 repositories {
@@ -9,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.loopj.android:android-async-http:1.4.5'
+    compile 'com.loopj.android:android-async-http:1.4.8'
     compile 'com.google.code.gson:gson:2.3'
     androidTestCompile 'com.google.guava:guava:18.0'
     testCompile 'junit:junit:4.6'
@@ -20,12 +19,12 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 10
-    buildToolsVersion '19.1.0'
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
 
     defaultConfig {
-        minSdkVersion 3
-        targetSdkVersion 10
+        minSdkVersion 10
+        targetSdkVersion 19
     }
 
     lintOptions {
@@ -33,7 +32,7 @@ android {
         warningsAsErrors true
         quiet false
         showAll true
-	disable 'OldTargetApi'
+	    disable 'OldTargetApi'
     }
 
     sourceSets{
@@ -47,11 +46,9 @@ android {
     }
 }
 
-
-
 android.libraryVariants.all { variant ->
     def name = variant.buildType.name
-    def task = project.tasks.create "jar${variant.name.capitalize()}", Jar
+    def task = project.tasks.create "jar${name.capitalize()}", Jar
     task.dependsOn variant.javaCompile
     task.from variant.javaCompile.destinationDir
     artifacts.add('archives', task);

@@ -34,7 +34,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 CSharpAnalytics 
-==============
+===============
 
 Copyright 2012-2014 Attack Pattern LLC
 

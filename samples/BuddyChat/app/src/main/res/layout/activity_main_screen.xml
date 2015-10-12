@@ -24,30 +24,22 @@
             android:id="@+id/lblHello" />
 
         <TextView
-            android:text="Choose who to chat with"
+            android:text="@string/chat_choose"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/lblMsg"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="false" />
+            android:id="@+id/lblMsg"  />
 
         <ListView
             android:layout_width="wrap_content"
             android:layout_height="392dp"
-            android:id="@+id/lvUsers"
-            android:layout_above="@+id/btnLogout"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:id="@+id/lvUsers" />
 
     </LinearLayout>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Logout"
+        android:text="@string/logout"
         android:id="@+id/btnLogout"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />

@@ -1,8 +1,5 @@
 package com.buddy.sdk.models;
 
-/**
- * Created by nick on 8/26/14.
- */
 public class BuddyLocation {
     public String name;
     public String description;

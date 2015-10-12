@@ -9,7 +9,7 @@
     tools:context="chat.sample.buddy.com.buddychat.Chat">
 
     <TextView
-        android:text="Chat with _"
+        android:text="@string/chat_with"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lblMsg" />
@@ -26,7 +26,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send"
+        android:text="@string/send"
         android:id="@+id/btnSend"
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/lvMessages"
@@ -36,9 +36,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textMsg"
+        android:inputType="textAutoCorrect"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/btnSend" />
+        android:layout_toStartOf="@+id/btnSend" />
 
 </RelativeLayout>

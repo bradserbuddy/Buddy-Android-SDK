@@ -9,9 +9,9 @@ import com.buddy.sdk.models.TimedMetric;
 import com.buddy.sdk.models.User;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.concurrent.Future;
 
 public class Buddy {
@@ -111,7 +111,7 @@ public class Buddy {
         return getCurrentClient().<T>put(path, parameters, callback);
     }
 
-    public static void setUserAuthenticationRequriedCallback(UserAuthenticationRequiredCallback callback)
+    public static void setUserAuthenticationRequiredCallback(UserAuthenticationRequiredCallback callback)
     {
         getCurrentClient().setUserAuthenticationRequiredCallback(callback);
     }

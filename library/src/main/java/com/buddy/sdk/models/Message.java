@@ -1,15 +1,9 @@
 package com.buddy.sdk.models;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
 
-/**
- * Created by nick on 8/25/14.
- */
 public class Message extends ModelBase {
     public enum MessageType {
         Sent,

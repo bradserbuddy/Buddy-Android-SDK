@@ -1,15 +1,11 @@
 package com.buddy.sdk.models;
 
-import android.location.Geocoder;
 import android.location.Location;
 
 import com.google.gson.JsonObject;
 
 import java.util.Date;
 
-/**
- * Created by shawn on 7/6/14.
- */
 public class ModelBase {
     public String id;
     public Date created;
