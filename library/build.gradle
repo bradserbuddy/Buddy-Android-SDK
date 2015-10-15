@@ -19,8 +19,8 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.1'
 
     defaultConfig {
         minSdkVersion 10
@@ -40,10 +40,13 @@ android {
             java.srcDirs = ['src/androidTest'];
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_6
         targetCompatibility JavaVersion.VERSION_1_6
     }
+
+    useLibrary 'org.apache.http.legacy'
 }
 
 android.libraryVariants.all { variant ->
