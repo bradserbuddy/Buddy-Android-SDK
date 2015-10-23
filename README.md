@@ -132,7 +132,7 @@ Each SDK provides general wrappers that make REST calls to Buddy. For call respo
 
 ##### POST
 
-In this example we will create a checkin. Take a look at the [Create Checkin documentation](/docs/2/Checkins), then:
+In this example we will create a checkin. Take a look at the [Create Checkin documentation](https://buddyplatform.com/docs/Checkins#CreateCheckin), then:
 
     Location location = new Location("");
     location.setLatitude(47.61d);
@@ -156,7 +156,7 @@ In this example we will create a checkin. Take a look at the [Create Checkin doc
 
 ##### GET
 
-This example searches for the checkin we created in the POST example. See [Search Checkins](https://buddyplatform.com/docs/2/Checkins#SearchCheckins) for a full list of parameters.
+This example searches for the checkin we created in the POST example. See [Search Checkins](https://buddyplatform.com/docs/Checkins#SearchCheckins) for a full list of parameters.
 
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("locationRange", "47.61, -122.33, 1500");
@@ -243,11 +243,11 @@ If you need to have multiple clients, for example if you need to interact with m
     client1.loginUser("user1", "pw1", null);
     client2.loginUser("user2", "pw2", null);
     
-The `Buddy` static class is has the same signature as the `BuddyClient` class, and is shorthand for calling the most recently created client via a `Buddy.init()` call.
+The `Buddy` static class has the same signature as the `BuddyClient` class, and is shorthand for calling the most recently created client via a `Buddy.init()` call.
 
 ##### Handling connectivity
 
-You can set use the `ConnectivityLevelChangedCallback` callback if you would like to be notified if your device loses and regains ability to communicate to the Buddy servers for whatever reason. Here's an example that notifies the user:
+You can set the `ConnectivityLevelChangedCallback` callback if you would like to be notified if your device loses and regains ability to communicate to the Buddy servers for whatever reason. Here's an example that notifies the user:
 
     Buddy.setConnectivityLevelChangedCallback(new ConnectivityLevelChangedCallback() {
         @Override
