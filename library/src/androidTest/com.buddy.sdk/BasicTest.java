@@ -85,7 +85,8 @@ public class BasicTest extends InstrumentationTestCase {
 
         BuddyResult<String> result = handle.get();
         assertNotNull(result);
-        assertEquals("AuthAppCredentialsInvalid", result.getError());
+        assertEquals("ParameterIncorrectFormat", result.getError());
+        assertEquals("The given ID was not a valid BuddyID.", result.getErrorMessage());
         assertEquals(null, result.getResult());
     }
 
@@ -129,30 +130,6 @@ public class BasicTest extends InstrumentationTestCase {
         assertNotNull(result);
         assertNull(result.getError());
         assertTrue(result.getResult());
-    }
-
-    public void testPostCheckin() throws Exception {
-
-        final BuddyClient client = getClient();
-
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("comment", "this is a test");
-        Location loc = new Location("BuddyTest");
-        loc.setLatitude(47);
-        loc.setLongitude(-122);
-        client.setLastLocation(loc);
-
-        client.<Checkin>post("/checkins", params, new BuddyCallback<Checkin>(Checkin.class) {
-            @Override
-            public void completed(BuddyResult<Checkin> result) {
-
-                client.setLastLocation(null);
-
-                Checkin r = result.getResult();
-                assertNotNull(r.location);
-                assertEquals((int) 47.0, (int) r.location.getLatitude());
-            }
-        });
     }
 
     public void testDeleteMetric() throws Exception {

@@ -7,10 +7,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
+import android.util.Log;
 
 import com.buddy.sdk.models.NotificationResult;
 import com.buddy.sdk.models.TimedMetric;
@@ -24,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -36,10 +40,13 @@ public class BuddyClientImpl implements BuddyClient {
     private BuddyClientOptions options;
     private Context context;
     private Location lastLocation;
-    private UserAuthenticationRequiredCallback userAuthCallback;
     private String sharedSecret; // Stored here and not in BuddyClientOptions as we dont want to serialize it to stable storage
+    private UserAuthenticationRequiredCallback userAuthCallback;
+    private ConnectivityLevelChangedCallback connectivityLevelChangedCallback;
+    private ConnectivityManager connectivityManager;
+    private ConnectivityLevel _connectivityLevel = ConnectivityLevel.Connected;
 
-    public BuddyClientImpl(Context context, String appId, String appKey){
+    public BuddyClientImpl(Context context, String appId, String appKey) {
         this(context, appId, appKey, null);
     }
 
@@ -52,21 +59,29 @@ public class BuddyClientImpl implements BuddyClient {
         BuddyClientSettings settings = getSettings();
         if (options == null) {
             this.options = new BuddyClientOptions();
-        }
-        else {
+        } else {
             this.options = options;
             this.sharedSecret = options.sharedSecret;
-            options.sharedSecret=null;
+            options.sharedSecret = null;
         }
         //if options was null this would always NPE
         if (this.options.serviceRoot != null && settings.serviceRoot == null) {
             settings.serviceRoot = this.options.serviceRoot;
         }
+
         getServiceClient();
+
+        if (context != null) {
+            this.connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        }
     }
 
     public void setUserAuthenticationRequiredCallback(UserAuthenticationRequiredCallback callback) {
         this.userAuthCallback = callback;
+    }
+
+    public void setConnectivityLevelChangedCallback(ConnectivityLevelChangedCallback callback) {
+        this.connectivityLevelChangedCallback = callback;
     }
 
     public void setLastLocation(Location loc) {
@@ -77,7 +92,7 @@ public class BuddyClientImpl implements BuddyClient {
         return lastLocation;
     }
 
-    private void setDefaultParameters(Map<String,Object> parameters) {
+    private void setDefaultParameters(Map<String, Object> parameters) {
 
         if (lastLocation != null && !parameters.containsKey("location")) {
             parameters.put("location", String.format("%s,%s", lastLocation.getLatitude(), lastLocation.getLongitude()));
@@ -91,17 +106,15 @@ public class BuddyClientImpl implements BuddyClient {
             Handler mainHandler = new Handler(Looper.getMainLooper());
 
             mainHandler.post(r);
-        }
-        else
-        {
+        } else {
             r.run();
         }
     }
 
 
     private String makeServerDevicesSignature(String apiKey, String Secret) {
-        String stringToSign = String.format("%s\n",apiKey);
-        return serviceClient.signString(stringToSign,Secret);
+        String stringToSign = String.format("%s\n", apiKey);
+        return serviceClient.signString(stringToSign, Secret);
     }
 
     public void getAccessToken(boolean autoRegister, final AccessTokenCallback callback) {
@@ -109,8 +122,7 @@ public class BuddyClientImpl implements BuddyClient {
         String token = getSettings().getAccessToken();
         if (token != null) {
             callback.completed(null, token);
-        }
-        else if(autoRegister) {
+        } else if (autoRegister) {
             registerDevice(new BuddyCallback<AccessTokenResult>(AccessTokenResult.class) {
                 @Override
                 public void completed(BuddyResult<AccessTokenResult> result) {
@@ -119,9 +131,9 @@ public class BuddyClientImpl implements BuddyClient {
                     if (result.getIsSuccess()) {
                         AccessTokenResult atr = result.getResult();
 
-                        if(sharedSecret!=null) {
-                            String serverSig = makeServerDevicesSignature(app_key,sharedSecret);
-                            if(!serverSig.equals(atr.serverSignature)) {
+                        if (sharedSecret != null) {
+                            String serverSig = makeServerDevicesSignature(app_key, sharedSecret);
+                            if (!serverSig.equals(atr.serverSignature)) {
                                 callback.completed(result.convert(Boolean.FALSE), null);
                                 return;
                             }
@@ -141,8 +153,7 @@ public class BuddyClientImpl implements BuddyClient {
                     }
                 }
             });
-        }
-        else {
+        } else {
             callback.completed(null, null);
         }
     }
@@ -154,6 +165,7 @@ public class BuddyClientImpl implements BuddyClient {
     public String getSharedSecret() {
         return sharedSecret;
     }
+
     //
     // REST Stuff
     //
@@ -170,56 +182,56 @@ public class BuddyClientImpl implements BuddyClient {
         return serviceClient;
     }
 
-    public <T> Future<BuddyResult<T>> get(String path, Map<String,Object> parameters, Class<T> clazz) {
+    public <T> Future<BuddyResult<T>> get(String path, Map<String, Object> parameters, Class<T> clazz) {
 
         return getServiceClient().makeRequest(BuddyServiceClient.GET, path, parameters, null, clazz);
     }
 
-    public <T> Future<BuddyResult<T>> get(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
+    public <T> Future<BuddyResult<T>> get(String path, Map<String, Object> parameters, final BuddyCallback<T> callback) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.GET, path,parameters, callback, null);
+        return getServiceClient().makeRequest(BuddyServiceClient.GET, path, parameters, callback, null);
     }
 
 
-    public <T> Future<BuddyResult<T>> post(String path, Map<String,Object> parameters, Class<T> clazz) {
+    public <T> Future<BuddyResult<T>> post(String path, Map<String, Object> parameters, Class<T> clazz) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.POST, path,parameters, null, clazz);
+        return getServiceClient().makeRequest(BuddyServiceClient.POST, path, parameters, null, clazz);
     }
 
-    public <T> Future<BuddyResult<T>> post(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
+    public <T> Future<BuddyResult<T>> post(String path, Map<String, Object> parameters, final BuddyCallback<T> callback) {
 
-        return getServiceClient().makeRequest(BuddyServiceClient.POST, path,parameters, callback, null);
+        return getServiceClient().makeRequest(BuddyServiceClient.POST, path, parameters, callback, null);
     }
 
 
-    public <T> Future<BuddyResult<T>> patch(String path, Map<String,Object> parameters, Class<T> clazz) {
+    public <T> Future<BuddyResult<T>> patch(String path, Map<String, Object> parameters, Class<T> clazz) {
 
         return getServiceClient().makeRequest(BuddyServiceClient.PATCH, path, parameters, null, clazz);
     }
 
-    public <T> Future<BuddyResult<T>> patch(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
+    public <T> Future<BuddyResult<T>> patch(String path, Map<String, Object> parameters, final BuddyCallback<T> callback) {
 
         return getServiceClient().makeRequest(BuddyServiceClient.PATCH, path, parameters, callback, null);
     }
 
 
-    public <T> Future<BuddyResult<T>> delete(String path, Map<String,Object> parameters, Class<T> clazz) {
+    public <T> Future<BuddyResult<T>> delete(String path, Map<String, Object> parameters, Class<T> clazz) {
 
         return getServiceClient().makeRequest(BuddyServiceClient.DELETE, path, parameters, null, clazz);
     }
 
-    public <T> Future<BuddyResult<T>> delete(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
+    public <T> Future<BuddyResult<T>> delete(String path, Map<String, Object> parameters, final BuddyCallback<T> callback) {
 
         return getServiceClient().makeRequest(BuddyServiceClient.DELETE, path, parameters, callback, null);
     }
 
 
-    public <T> Future<BuddyResult<T>> put(String path, Map<String,Object> parameters,  Class<T> clazz) {
+    public <T> Future<BuddyResult<T>> put(String path, Map<String, Object> parameters, Class<T> clazz) {
 
         return getServiceClient().makeRequest(BuddyServiceClient.PUT, path, parameters, null, clazz);
     }
 
-    public <T> Future<BuddyResult<T>> put(String path, Map<String,Object> parameters, final BuddyCallback<T> callback) {
+    public <T> Future<BuddyResult<T>> put(String path, Map<String, Object> parameters, final BuddyCallback<T> callback) {
 
         return getServiceClient().makeRequest(BuddyServiceClient.PUT, path, parameters, callback, null);
     }
@@ -248,7 +260,7 @@ public class BuddyClientImpl implements BuddyClient {
         Map<String, Object> parameters = new HashMap<String, Object>();
 
         parameters.put("platform", "Android");
-        parameters.put("model",android.os.Build.MODEL);
+        parameters.put("model", android.os.Build.MODEL);
         parameters.put("osVersion", android.os.Build.VERSION.RELEASE);
 
         if (options.deviceTag != null) {
@@ -361,7 +373,7 @@ public class BuddyClientImpl implements BuddyClient {
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("identityProviderId", identityProviderId);
         parameters.put("identityId", identityId);
-        parameters.put("identityAccessToken",identityAccessToken);
+        parameters.put("identityAccessToken", identityAccessToken);
 
         return this.post("/users/login/social", parameters, getUserCallback(callback));
     }
@@ -373,7 +385,7 @@ public class BuddyClientImpl implements BuddyClient {
         final BuddyFuture<BuddyResult<Boolean>> promise = new BuddyFuture<BuddyResult<Boolean>>();
 
 
-        BuddyFuture<BuddyResult<AccessTokenResult>> handle = (BuddyFuture<BuddyResult<AccessTokenResult>>)this.post("/users/me/logout", parameters, new BuddyCallback<AccessTokenResult>(AccessTokenResult.class) {
+        BuddyFuture<BuddyResult<AccessTokenResult>> handle = (BuddyFuture<BuddyResult<AccessTokenResult>>) this.post("/users/me/logout", parameters, new BuddyCallback<AccessTokenResult>(AccessTokenResult.class) {
 
             @Override
             public void completed(BuddyResult<AccessTokenResult> result) {
@@ -428,7 +440,7 @@ public class BuddyClientImpl implements BuddyClient {
     //
     // Metrics stuff
     //
-    public Future<BuddyResult<TimedMetric>> recordMetricEvent(String eventName, Map<String,Object> values, final int timeoutInSeconds, final BuddyCallback<TimedMetric> callback) {
+    public Future<BuddyResult<TimedMetric>> recordMetricEvent(String eventName, Map<String, Object> values, final int timeoutInSeconds, final BuddyCallback<TimedMetric> callback) {
         Map<String, Object> parameters = new HashMap<String, Object>();
         if (values != null) {
             parameters.put("values", values);
@@ -443,7 +455,7 @@ public class BuddyClientImpl implements BuddyClient {
 
         }
 
-        return this.<TimedMetric>post("/metrics/events/" + eventName,parameters, new BuddyCallback<TimedMetric>(TimedMetric.class) {
+        return this.<TimedMetric>post("/metrics/events/" + eventName, parameters, new BuddyCallback<TimedMetric>(TimedMetric.class) {
                     @Override
                     public void completed(BuddyResult<TimedMetric> result) {
                         if (result.getIsSuccess() && timeoutInSeconds > 0) {
@@ -465,7 +477,7 @@ public class BuddyClientImpl implements BuddyClient {
 
 
         final BuddyClientSettings settings = getSettings();
-        
+
         if (pushToken != null && pushToken.equals(settings.pushToken)) {
             // nothing to do.
             BuddyFuture<BuddyResult<Boolean>> ret = new BuddyFuture<BuddyResult<Boolean>>();
@@ -478,14 +490,14 @@ public class BuddyClientImpl implements BuddyClient {
                 callback.completed(br);
             }
             return ret;
-        }            
+        }
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         if (pushToken != null) {
             parameters.put("pushToken", pushToken);
         }
 
-       
+
         final BuddyFuture<BuddyResult<Boolean>> promise = new BuddyFuture<BuddyResult<Boolean>>();
 
 
@@ -528,16 +540,16 @@ public class BuddyClientImpl implements BuddyClient {
         return sendPushNotification(recipientIds, title, message, payload, -1);
     }
 
-    public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, String title, String message, String payload, int counterValue){
+    public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, String title, String message, String payload, int counterValue) {
         return sendPushNotification(recipientIds, title, message, payload, counterValue, null);
     }
 
-    public Future<BuddyResult<NotificationResult>> sendPushNotification(final List<String> recipientIds, final Map<String,Object> osCustomData){
+    public Future<BuddyResult<NotificationResult>> sendPushNotification(final List<String> recipientIds, final Map<String, Object> osCustomData) {
         return sendPushNotification(recipientIds, null, null, null, -1, osCustomData);
     }
 
-    public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, String title, String message, String payload, int counterValue, Map<String,Object> osCustomData) {
-        final Map<String,Object> params = new HashMap<String, Object>();
+    public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, String title, String message, String payload, int counterValue, Map<String, Object> osCustomData) {
+        final Map<String, Object> params = new HashMap<String, Object>();
 
         params.put("recipients", recipientIds);
         if (title != null) {
@@ -555,16 +567,13 @@ public class BuddyClientImpl implements BuddyClient {
         if (counterValue >= 0) {
             params.put("counterValue", counterValue);
         }
-        if(osCustomData != null) {
+        if (osCustomData != null) {
             params.put("osCustomData", osCustomData);
         }
 
         // send the notification
         return Buddy.post("/notifications", params, NotificationResult.class);
     }
-
-
-
 
 
     public void recordNotificationReceived(Intent message) {
@@ -581,9 +590,9 @@ public class BuddyClientImpl implements BuddyClient {
 
         public String serviceRoot;
         public String deviceToken;
-        public Date   deviceTokenExpires;
+        public Date deviceTokenExpires;
         public String userToken;
-        public Date   userTokenExpires;
+        public Date userTokenExpires;
         public String userid;
         public String pushToken;
         public String appVersion;
@@ -592,8 +601,7 @@ public class BuddyClientImpl implements BuddyClient {
             Date now = new Date();
             if (userToken != null && userTokenExpires.after(now)) {
                 return userToken;
-            }
-            else if (deviceToken != null && deviceTokenExpires.after(now)) {
+            } else if (deviceToken != null && deviceTokenExpires.after(now)) {
                 return deviceToken;
             }
             return null;
@@ -611,8 +619,7 @@ public class BuddyClientImpl implements BuddyClient {
     private BuddyClientSettings settings;
 
     // preferences
-    private SharedPreferences getPreferences()
-    {
+    private SharedPreferences getPreferences() {
         if (context != null) {
 
             return context.getSharedPreferences(String.format("com.buddy-%s-%s", app_id, options == null ? "" : options.settingsPrefix), Context.MODE_PRIVATE);
@@ -657,13 +664,14 @@ public class BuddyClientImpl implements BuddyClient {
 
             BuddyClientSettings settings = getSettings();
 
-            if (error.equals("AuthAppCredentialsInvalid") || error.equals("AuthAccessTokenInvalid")) {
+            if (error.equals("NoInternetConnection")) {
+                OnConnectivityChanged(ConnectivityLevel.None);
+            } else if (error.equals("AuthAppCredentialsInvalid") || error.equals("AuthAccessTokenInvalid")) {
                 // Bad token, clear all settings so they'll be required.
                 //
                 settings.deviceToken = settings.userToken = null;
                 saveSettings();
-            }
-            else if (error.equals("AuthUserAccessTokenRequired") && userAuthCallback != null) {
+            } else if (error.equals("AuthUserAccessTokenRequired") && userAuthCallback != null) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -671,6 +679,103 @@ public class BuddyClientImpl implements BuddyClient {
                     }
                 });
             }
+        }
+    }
+
+    protected void OnConnectivityChanged(final ConnectivityLevel level) {
+        if (_connectivityLevel == level) {
+            return;
+        }
+
+        if (connectivityLevelChangedCallback != null) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    connectivityLevelChangedCallback.connectivityLevelChanged(level);
+                }
+            });
+        }
+
+        _connectivityLevel = level;
+
+        if (level == ConnectivityLevel.None) {
+            CheckConnectivity();
+        }
+    }
+
+    private void CheckConnectivity() {
+
+        AsyncTask<BuddyClientImpl, Void, Void> connectionTask = new AsyncTask<BuddyClientImpl, Void, Void>() {
+
+            private Random random = new Random();
+
+            @Override
+            protected Void doInBackground(BuddyClientImpl... clients) {
+                BuddyResult<String> result = null;
+
+                int retryCount = 0;
+
+                do {
+                    int retryIntervalInMilliseconds = getRetryInterval(++retryCount);
+
+                    Log.i("Retry", String.format("Retry interval (milliseconds): %s", retryIntervalInMilliseconds));
+
+                    try {
+                        Thread.sleep(retryIntervalInMilliseconds);
+
+                        Future<BuddyResult<String>> handle = clients[0].get("/service/ping", null, String.class);
+
+                        result = handle.get();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (result != null && result.getIsSuccess()) {
+                        OnConnectivityChanged(getConnectivityType());
+                    }
+                } while (result == null || !result.getIsSuccess());
+
+                return null;
+            }
+
+            private int getRetryInterval(int retryCount) {
+                if (BuildConfig.DEBUG && !(retryCount > 0)) { throw new AssertionError(); }
+
+                final int retryCapInMilliseconds = 30000;
+                final int retryBaseInMilliseconds = 500;
+
+                return random.nextInt(Math.min(retryCapInMilliseconds, retryBaseInMilliseconds *
+                        (int) Math.pow(2, Math.min(retryCount, 32))));
+            }
+        };
+
+        connectionTask.execute(this);
+    }
+
+    private ConnectivityLevel getConnectivityType() {
+
+        if (this.connectivityManager == null) {
+            // If we have no connectivity manager, assume we are connected; API failures need to be handled regardless.
+            // Connectivity manager is unavailable during unit tests.
+            return ConnectivityLevel.Connected;
+        }
+
+        NetworkInfo networkInfo = this.connectivityManager.getActiveNetworkInfo();
+        int networkInfoType = networkInfo.getType();
+
+        switch (networkInfoType) {
+            case ConnectivityManager.TYPE_WIFI:
+            case ConnectivityManager.TYPE_WIMAX:
+                return ConnectivityLevel.WiFi;
+
+            case ConnectivityManager.TYPE_MOBILE:
+            case ConnectivityManager.TYPE_MOBILE_DUN:
+                return ConnectivityLevel.Carrier;
+
+            default:
+                return networkInfo.isConnected() ? ConnectivityLevel.Connected : ConnectivityLevel.None;
         }
     }
 }
