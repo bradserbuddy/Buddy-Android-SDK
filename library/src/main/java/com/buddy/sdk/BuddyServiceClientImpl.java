@@ -265,7 +265,10 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
     }
 
 
-    private <T> BuddyFuture<BuddyResult<T>> makeRequestCore(String verb, String path, final String accessToken, final Map<? extends String, ? extends Object> parameters, final BuddyCallback<T> callback, final Class<T> clazz) {
+    private <T> BuddyFuture<BuddyResult<T>> makeRequestCore(String verb, String path, final String accessToken, final Map<? extends String, ? extends Object> callParams, final BuddyCallback<T> callback, final Class<T> clazz) {
+
+        final Map<? extends String,? extends Object> parameters = callParams == null ? new HashMap<String, Object>() : callParams;
+
         List<Header> headerList = new ArrayList<Header>();
         String root = _parent.getServiceRoot();
 
@@ -353,6 +356,8 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
         } else if (accessToken != null) {
             headerList.add(new BasicHeader("Authorization", String.format("Buddy %s", accessToken)));
         }
+
+        this._parent.setDefaultParameters((Map<String, Object>) parameters);
 
         Header[] headers = headerList.toArray(new Header[0]);
 

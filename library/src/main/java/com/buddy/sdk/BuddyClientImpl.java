@@ -40,7 +40,7 @@ public class BuddyClientImpl implements BuddyClient {
     private BuddyClientOptions options;
     private Context context;
     private Location lastLocation;
-    private String sharedSecret; // Stored here and not in BuddyClientOptions as we dont want to serialize it to stable storage
+    private String sharedSecret; // Stored here and not in BuddyClientOptions as we don't want to serialize it to stable storage
     private UserAuthenticationRequiredCallback userAuthCallback;
     private ConnectivityLevelChangedCallback connectivityLevelChangedCallback;
     private ConnectivityManager connectivityManager;
@@ -92,10 +92,10 @@ public class BuddyClientImpl implements BuddyClient {
         return lastLocation;
     }
 
-    private void setDefaultParameters(Map<String, Object> parameters) {
+    void setDefaultParameters(Map<String, Object> parameters) {
 
         if (lastLocation != null && !parameters.containsKey("location")) {
-            parameters.put("location", String.format("%s,%s", lastLocation.getLatitude(), lastLocation.getLongitude()));
+            parameters.put("location", lastLocation);
         }
     }
 
@@ -443,7 +443,7 @@ public class BuddyClientImpl implements BuddyClient {
     public Future<BuddyResult<TimedMetric>> recordMetricEvent(String eventName, Map<String, Object> values, final int timeoutInSeconds, final BuddyCallback<TimedMetric> callback) {
         Map<String, Object> parameters = new HashMap<String, Object>();
         if (values != null) {
-            parameters.put("values", values);
+            parameters.put("value", values);
         }
         if (timeoutInSeconds > 0) {
             parameters.put("timeoutInSeconds", timeoutInSeconds);
