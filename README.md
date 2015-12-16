@@ -40,9 +40,11 @@ This will install the latest release of the Buddy Android SDK.
     compile 'com.buddy:androidsdk:3.0.0+'
 
 At this point you will be able to import from com.buddy.sdk to access the Buddy Classes
-(e.g. `import com.buddy.sdk.BuddyClient`)
+(e.g. `import com.buddy.sdk.BuddyClient`).
 
-#### Building Source
+#### Install from Source
+
+##### Getting the Source
 
 Buddy hosts our SDK source on GitHub. To access it you need to have [Git](http://git-scm.com/download) installed. If you'd like to contribute SDK modifications or additions to Buddy, you'll want to [fork the repository](https://help.github.com/articles/fork-a-repo) so you can issue [pull requests](https://help.github.com/articles/be-social#pull-requests). See the "Contributing Back" section below for details.
 
@@ -52,14 +54,12 @@ From a cmd window or terminal, type:
 
 This will copy the latest source of the SDK into a directory called *Buddy-Android-SDK*.
 
-#### Install Locally
-
-##### Prerequisites
+##### Build Prerequisites
 
 To build the SDK you need to:
 
 1.  Install [Android Studio](http://developer.android.com/sdk/index.html). You may be asked to install a compatible version of the Java SE Development Kit, if you don't already have it installed.
-2.  Open the Android SDK Manager and make sure you have installed Android SDK Build-tools 23.0.1 and Android 4.4.2 (API 19).
+2.  Open the Android SDK Manager and make sure you have installed Android SDK Build-tools 23.0.2 and Android 4.4.2 (API 19).
 
 ##### Build and Install
 
@@ -68,13 +68,13 @@ To build the SDK you need to:
 3.  Look in the `library/build/libs` directory to find the built JARs.
 4.  Add the buddy-sdk-_version_.jar file (e.g. buddy-sdk-3.0.4.jar) as a dependency for your Android application by modifying the `dependencies { ... }` block of your application's build.gradle file. The `compile files` line should contain the relative path to the Buddy SDK .jar file. Be sure to add the `android-async-http` and `gson` dependencies:
 
-    dependencies {
-        compile fileTree(dir: 'libs', include: ['*.jar'])
-        // Add the following dependencies:
-        compile 'com.loopj.android:android-async-http:1.4.8'
-        compile 'com.google.code.gson:gson:2.3'
-        compile files('../../../library/build/libs/buddy-sdk-3.0.4.jar')
-    }
+        dependencies {
+            compile fileTree(dir: 'libs', include: ['*.jar'])
+            // Add the following dependencies:
+            compile 'com.loopj.android:android-async-http:1.4.8'
+            compile 'com.google.code.gson:gson:2.3'
+            compile files('../../../library/build/libs/buddy-sdk-3.0.4.jar')
+        }
 
 ### Using the Android SDK
 
