@@ -1,21 +1,14 @@
-package chat.sample.buddy.com.buddychat;
+package com.buddy.sample.buddychat;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
-
-import com.buddy.sdk.models.User;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-/**
- * Created by shawn on 8/27/14.
- */
 abstract class SimpleAdapter<T> extends ArrayAdapter<T> {
 
     private List<T> itemList;
@@ -47,7 +40,6 @@ abstract class SimpleAdapter<T> extends ArrayAdapter<T> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         View v = convertView;
         if (v == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -57,26 +49,25 @@ abstract class SimpleAdapter<T> extends ArrayAdapter<T> {
         T c = itemList.get(position);
 
         populateView(v, c);
-        return v;
 
+        return v;
     }
 
-    protected  abstract <T> void populateView(View v, T item);
+    protected abstract <T2> void populateView(View v, T2 item);
 
     public List<T> getItemList() {
         return itemList;
     }
 
     public void setItemList(List<T> itemList) {
-
         this.itemList = itemList;
     }
 
     public void appendItemList(List<T> itemList) {
-
         if (this.itemList == null) {
             this.itemList = new ArrayList<T>();
         }
+
         for (T item : itemList) {
             this.itemList.add(item);
         }

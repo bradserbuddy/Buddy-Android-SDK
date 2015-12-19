@@ -1,9 +1,9 @@
-package chat.sample.buddy.com.buddychat;
+package com.buddy.sample.buddychat;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,23 +15,21 @@ import com.buddy.sdk.BuddyCallback;
 import com.buddy.sdk.BuddyResult;
 import com.buddy.sdk.models.User;
 
-import chat.sample.buddy.com.buddychat.R;
-
 //
 // Login the user
 //
-public class Login extends ActionBarActivity {
+public class Login extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        final EditText editUsername = (EditText)findViewById(R.id.editUserName);
-        final EditText editPassword = (EditText)findViewById(R.id.editPassword);
+        final EditText editUsername = (EditText) findViewById(R.id.editUserName);
+        final EditText editPassword = (EditText) findViewById(R.id.editPassword);
 
-        final Button btnLogin = (Button)super.findViewById(R.id.btnLogin);
-        final Button btnSignup = (Button)super.findViewById(R.id.btnSignup);
+        final Button btnLogin = (Button) super.findViewById(R.id.btnLogin);
+        final Button btnSignup = (Button) super.findViewById(R.id.btnSignup);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,23 +44,21 @@ public class Login extends ActionBarActivity {
                             Intent i = new Intent(getBaseContext(), MainScreen.class);
                             startActivity(i);
                             finish();
-                        }
-                        else {
+                        } else {
                             // show error
                             String error = result.getError();
 
                             // Username or password false, display and an error
-                            final AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(Login.this);
+                            final AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Login.this);
 
                             dlgAlert.setTitle("Error Logging In");
                             dlgAlert.setPositiveButton("OK", null);
                             dlgAlert.setCancelable(true);
 
-                            dlgAlert.setPositiveButton("Ok",null);
+                            dlgAlert.setPositiveButton("Ok", null);
                             if ("AuthBadUsernameOrPassword".equalsIgnoreCase(error)) {
                                 dlgAlert.setMessage("Bad username or password, please try again.");
-                            }
-                            else {
+                            } else {
                                 dlgAlert.setMessage(String.format("Error attempting login: %s.", result.getError()));
                             }
                             dlgAlert.create().show();
@@ -76,7 +72,7 @@ public class Login extends ActionBarActivity {
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(Login.this.getBaseContext(),Signup.class);
+                Intent i = new Intent(Login.this.getBaseContext(), SignupNewUser.class);
                 Login.this.startActivity(i);
 
             }

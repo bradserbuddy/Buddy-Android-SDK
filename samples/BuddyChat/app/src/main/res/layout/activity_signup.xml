@@ -9,30 +9,21 @@
     tools:context="com.buddy.sample.buddychat.SignupActivity"
     android:id="@+id/signupRoot">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
+    <EditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-       >
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/editName"
+        android:hint="@string/name" />
 
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
-            android:id="@+id/editName"
-            android:hint="Name
-            " />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
         android:id="@+id/editUserName"
-
-        android:hint="Username" />
+        android:hint="@string/username" />
 
     <EditText
         android:layout_width="match_parent"
@@ -40,18 +31,13 @@
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/editPassword"
-
-        android:password="true"
-        android:hint="Password" />
+        android:hint="@string/password" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create Account"
+        android:text="@string/create_account"
         android:id="@+id/btnSignup"
-
         android:layout_marginTop="10dip" />
-</LinearLayout>
-
 
 </RelativeLayout>

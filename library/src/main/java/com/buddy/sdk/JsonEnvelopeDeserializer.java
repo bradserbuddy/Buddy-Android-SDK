@@ -15,9 +15,6 @@ import com.google.gson.JsonPrimitive;
 import java.lang.reflect.Type;
 import java.util.Date;
 
-/**
- * Created by shawn on 7/6/14.
- */
 public class JsonEnvelopeDeserializer<T> implements JsonDeserializer<JsonEnvelope<Object>>
 {
     private Class<T> clazz;

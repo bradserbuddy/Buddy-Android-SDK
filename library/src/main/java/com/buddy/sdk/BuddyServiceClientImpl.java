@@ -5,27 +5,6 @@ import android.location.Location;
 import android.os.Looper;
 import android.util.Log;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import java.net.URI;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
 import com.buddy.sdk.models.LocationRange;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,6 +25,27 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.json.JSONObject;
+
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -83,7 +83,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
             }
 
             if (headers != null) patch.setHeaders(headers);
-            return sendRequest((DefaultHttpClient)getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
+            return sendRequest((DefaultHttpClient) getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
         }
 
         public RequestHandle delete(Context ctx, String url, Header[] headers, HttpEntity entity, String contentType, ResponseHandlerInterface responseHandler) {
@@ -94,7 +94,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
             }
 
             if (headers != null) patch.setHeaders(headers);
-            return sendRequest((DefaultHttpClient)getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
+            return sendRequest((DefaultHttpClient) getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
         }
     }
 
@@ -108,7 +108,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
             }
 
             if (headers != null) patch.setHeaders(headers);
-            return sendRequest((DefaultHttpClient)getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
+            return sendRequest((DefaultHttpClient) getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
         }
 
         public RequestHandle delete(Context ctx, String url, Header[] headers, HttpEntity entity, String contentType, ResponseHandlerInterface responseHandler) {
@@ -119,12 +119,12 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
             }
 
             if (headers != null) patch.setHeaders(headers);
-            return sendRequest((DefaultHttpClient)getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
+            return sendRequest((DefaultHttpClient) getHttpClient(), getHttpContext(), patch, contentType, responseHandler, ctx);
         }
     }
 
     AsyncHttpClient client;
-    static Map<String, Method> clientMethods = new HashMap<String,Method>();
+    static Map<String, Method> clientMethods = new HashMap<String, Method>();
     private boolean syncMode;
 
     public BuddyServiceClientImpl(BuddyClientImpl parent) {
@@ -210,8 +210,8 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
 
     static Gson makeRequestSerializer() {
         return new GsonBuilder()
-                .registerTypeAdapter(Location.class,new BuddyLocationSerializer())
-                .registerTypeAdapter(LocationRange.class,new BuddyLocationRangeSerializer())
+                .registerTypeAdapter(Location.class, new BuddyLocationSerializer())
+                .registerTypeAdapter(LocationRange.class, new BuddyLocationRangeSerializer())
                 .registerTypeAdapter(DateRange.class, new DateRangeSerializer())
                 .create();
     }
@@ -239,8 +239,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
                     ResponseHandlerInterface.class
             );
 
-        }
-        catch (NoSuchMethodException nsmEx) {
+        } catch (NoSuchMethodException nsmEx) {
             m = null;
         }
 
@@ -258,21 +257,23 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
 
     private Object convertParameter(Object val) {
         if (val instanceof DateRange) {
-            return DateRangeSerializer.serializeCore((DateRange)val);
-        }
-        else if (val instanceof LocationRange) {
-            return BuddyLocationRangeSerializer.serializeCore((LocationRange)val);
+            return DateRangeSerializer.serializeCore((DateRange) val);
+        } else if (val instanceof LocationRange) {
+            return BuddyLocationRangeSerializer.serializeCore((LocationRange) val);
         }
         return val;
     }
 
 
-    private <T> BuddyFuture<BuddyResult<T>> makeRequestCore(String verb, String path, final String accessToken, final Map<? extends String,? extends Object> parameters, final BuddyCallback<T> callback, final Class<T> clazz) {
+    private <T> BuddyFuture<BuddyResult<T>> makeRequestCore(String verb, String path, final String accessToken, final Map<? extends String, ? extends Object> callParams, final BuddyCallback<T> callback, final Class<T> clazz) {
+
+        final Map<? extends String,? extends Object> parameters = callParams == null ? new HashMap<String, Object>() : callParams;
+
         List<Header> headerList = new ArrayList<Header>();
         String root = _parent.getServiceRoot();
 
         if (root.endsWith("/")) {
-            root = root.substring(0, root.length()-1);
+            root = root.substring(0, root.length() - 1);
         }
 
         if (path.startsWith("/")) {
@@ -314,8 +315,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
                 if (errorResponse != null) {
                     env = new JsonEnvelope<T>(errorResponse, null);
                     logResult(errorResponse);
-                }
-                else {
+                } else {
                     env = new JsonEnvelope<T>();
                     env.error = "NoInternetConnection";
                     env.message = "No internet connection is available.";
@@ -349,14 +349,15 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
         headerList.add(new BasicHeader("Accept", DefaultContentType));
 
 
-        if(isFile && verb.toUpperCase(Locale.getDefault()).equals(GET)) {
-            if( (accessToken!=null) && (parameters==null || !parameters.containsKey("accessToken")) ) {
-                requestParams.put("accessToken",accessToken);
+        if (isFile && verb.toUpperCase(Locale.getDefault()).equals(GET)) {
+            if ((accessToken != null) && (parameters == null || !parameters.containsKey("accessToken"))) {
+                requestParams.put("accessToken", accessToken);
             }
+        } else if (accessToken != null) {
+            headerList.add(new BasicHeader("Authorization", String.format("Buddy %s", accessToken)));
         }
-        else if (accessToken != null) {
-            headerList.add(new BasicHeader("Authorization", String.format("Buddy %s",accessToken)));
-        }
+
+        this._parent.setDefaultParameters((Map<String, Object>) parameters);
 
         Header[] headers = headerList.toArray(new Header[0]);
 
@@ -364,7 +365,6 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
         AsyncHttpClient httpClient = getHttpClient();
 
         if (verb.toUpperCase(Locale.getDefault()).equals(GET)) {
-
 
 
             if (parameters != null) {
@@ -411,8 +411,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
                 };
             }
             httpClient.get(null, url, headers, requestParams, handler);
-        }
-        else {
+        } else {
 
             // loop through and pull out any files.
             //
@@ -464,6 +463,30 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
 
                             }
 
+                            private boolean ups;
+
+                            @Override
+                            public boolean getUsePoolThread() {
+                                return ups;
+                            }
+
+                            @Override
+                            public void setUsePoolThread(boolean usePoolThread) {
+                                boolean ups = usePoolThread;
+                            }
+
+                            private Object tag;
+
+                            @Override
+                            public Object getTag() {
+                                return tag;
+                            }
+
+                            @Override
+                            public void setTag(Object TAG) {
+                                tag = TAG;
+                            }
+
                             @Override
                             public void sendStartMessage() {
 
@@ -475,8 +498,18 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
                             }
 
                             @Override
-                            public void sendProgressMessage(int bytesWritten, int bytesTotal) {
+                            public void sendProgressMessage(long bytesWritten, long bytesTotal) {
                                 Log.d("BuddySdk", String.format("%d/%d", bytesWritten, bytesTotal));
+                            }
+
+                            @Override
+                            public void onPreProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
+
+                            }
+
+                            @Override
+                            public void onPostProcessResponse(ResponseHandlerInterface instance, HttpResponse response) {
+
                             }
 
                             @Override
@@ -547,8 +580,7 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
             if (methodToInvoke == null) {
 
                 jsonHandler.onFailure(0, new Header[0], "", new MethodNotSupportedException("Verb " + verb + " not supported."));
-            }
-            else {
+            } else {
                 try {
                     try {
 
@@ -599,46 +631,44 @@ class BuddyServiceClientImpl implements BuddyServiceClient {
 
         // get the access token.
         //
-        _parent.getAccessToken(autoRegister, new AccessTokenCallback(){
+        _parent.getAccessToken(autoRegister, new AccessTokenCallback() {
 
-                @Override
-                public void completed(BuddyResult<Boolean> error, final String accessToken) {
+                    @Override
+                    public void completed(BuddyResult<Boolean> error, final String accessToken) {
 
-                    if (error != null) {
-                        // propagate the error
-                        BuddyResult<T> newResult = error.convert((T)null);
-                        if (callback != null) callback.completed(newResult);
-                        promise.setValue(newResult);
-                    }
-                    else {
+                        if (error != null) {
+                            // propagate the error
+                            BuddyResult<T> newResult = error.convert((T) null);
+                            if (callback != null) callback.completed(newResult);
+                            promise.setValue(newResult);
+                        } else {
 
-                        String fullAccessToken=accessToken;
+                            String fullAccessToken = accessToken;
 
-                        if(fullAccessToken!=null && _parent.getSharedSecret()!=null)
-                        {
-                            String requestSig = signRequest(verb,path,_parent.getAppId(),_parent.getSharedSecret());
-                            if(requestSig!=null) {
-                                fullAccessToken = String.format("%s %s", fullAccessToken, requestSig);
-                            }
-                        }
-
-                        final BuddyFuture<BuddyResult<T>> innerPromise = BuddyServiceClientImpl.this.<T>makeRequestCore(verb, path, fullAccessToken, parameters, callback, clazz);
-
-                        innerPromise.continueWith(new BuddyFutureCallback() {
-                            @Override
-                            public void completed(BuddyFuture future) {
-                                try {
-                                    promise.setValue(innerPromise.get());
-                                } catch (InterruptedException e) {
-
-                                } catch (ExecutionException e) {
-
+                            if (fullAccessToken != null && _parent.getSharedSecret() != null) {
+                                String requestSig = signRequest(verb, path, _parent.getAppId(), _parent.getSharedSecret());
+                                if (requestSig != null) {
+                                    fullAccessToken = String.format("%s %s", fullAccessToken, requestSig);
                                 }
                             }
-                        });
+
+                            final BuddyFuture<BuddyResult<T>> innerPromise = BuddyServiceClientImpl.this.<T>makeRequestCore(verb, path, fullAccessToken, parameters, callback, clazz);
+
+                            innerPromise.continueWith(new BuddyFutureCallback() {
+                                @Override
+                                public void completed(BuddyFuture future) {
+                                    try {
+                                        promise.setValue(innerPromise.get());
+                                    } catch (InterruptedException e) {
+
+                                    } catch (ExecutionException e) {
+
+                                    }
+                                }
+                            });
+                        }
                     }
                 }
-            }
         );
         return promise;
 

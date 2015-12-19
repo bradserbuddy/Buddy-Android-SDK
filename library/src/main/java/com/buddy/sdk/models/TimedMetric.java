@@ -1,13 +1,9 @@
 package com.buddy.sdk.models;
 
-import com.buddy.sdk.BuddyClient;
 import com.buddy.sdk.BuddyCallback;
+import com.buddy.sdk.BuddyClient;
 import com.buddy.sdk.BuddyResult;
 
-
-/**
- * Created by shawn on 7/6/14.
- */
 public class TimedMetric extends ModelBase {
 
     private BuddyClient client;

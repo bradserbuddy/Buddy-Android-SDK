@@ -14,6 +14,7 @@ import java.util.concurrent.Future;
 
 public interface BuddyClient{
     public void setUserAuthenticationRequiredCallback(UserAuthenticationRequiredCallback callback);
+    public void setConnectivityLevelChangedCallback(ConnectivityLevelChangedCallback callback);
     public void setLastLocation(Location loc);
     public Location getLastLocation();
     public String getServiceRoot();
@@ -40,6 +41,6 @@ public interface BuddyClient{
     public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, String title, String message, String payload, int counterValue);
     public Future<BuddyResult<NotificationResult>> sendPushNotification(List<String> recipientIds, Map<String,Object> osCustomData);
     public void recordNotificationReceived(Intent message);
-    void handleError(BuddyResult result);
-    void getAccessToken(boolean autoRegister, final AccessTokenCallback callback);
+    public void handleError(BuddyResult result);
+    public void getAccessToken(boolean autoRegister, final AccessTokenCallback callback);
 }

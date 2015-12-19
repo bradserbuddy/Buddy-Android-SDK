@@ -3,10 +3,6 @@ package com.buddy.sdk;
 import java.io.File;
 import java.io.InputStream;
 
-/**
- * Created by shawn on 7/5/14.
- */
-
 public class BuddyFile {
 
     File file;

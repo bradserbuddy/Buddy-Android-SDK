@@ -2,21 +2,15 @@ package com.buddy.sdk;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/**
- * Created by shawn on 7/7/14.
- */
 class BuddyFuture<V> implements Future<V> {
 
     private boolean done;
     private V value;
-    private CountDownLatch waitHandle = new CountDownLatch(1);
-
     private Object SyncObj = new Object();
 
     private class CallbackWrapper {
