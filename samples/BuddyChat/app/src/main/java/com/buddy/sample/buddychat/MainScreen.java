@@ -18,18 +18,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.buddy.sdk.Buddy;
-import com.buddy.sdk.BuddyCallback;
-import com.buddy.sdk.BuddyResult;
-import com.buddy.sdk.models.PagedResult;
-import com.buddy.sdk.models.User;
+import com.buddy.sdk.*;
+import com.buddy.sdk.models.*;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 // The main screen lists the apps users, so we can pick who to chat with
