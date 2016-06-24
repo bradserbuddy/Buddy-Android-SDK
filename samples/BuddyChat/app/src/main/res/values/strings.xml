@@ -16,6 +16,6 @@
     <string name="logout">Logout</string>
     <string name="name">Name</string>
     <string name="create_account">Create Account</string>
-    <string name="connection_lost">Connection lost. Reconnecting...</string>
+    <string name="connection_lost">Connection lost. Reconnecting…</string>
     <string name="reconnected">Reconnected!</string>
 </resources>

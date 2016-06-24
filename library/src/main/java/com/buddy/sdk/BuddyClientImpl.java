@@ -621,8 +621,8 @@ public class BuddyClientImpl implements BuddyClient {
     // preferences
     private SharedPreferences getPreferences() {
         if (context != null) {
-
-            return context.getSharedPreferences(String.format("com.buddy-%s-%s", app_id, options == null ? "" : options.settingsPrefix), Context.MODE_PRIVATE);
+            return context.getSharedPreferences(String.format("com.buddy-%s-%s", app_id, options == null ||
+                    options.settingsPrefix == null ? "" : options.settingsPrefix), Context.MODE_PRIVATE);
         }
         return null;
     }
@@ -634,7 +634,7 @@ public class BuddyClientImpl implements BuddyClient {
         if (preferences != null) {
             SharedPreferences.Editor editor = preferences.edit();
             String json = new Gson().toJson(settings);
-            editor.putString(String.format("%s", app_id), json);
+            editor.putString(this.app_id, json);
             editor.commit();
         }
     }
@@ -644,7 +644,7 @@ public class BuddyClientImpl implements BuddyClient {
             SharedPreferences preferences = getPreferences();
 
             if (preferences != null) {
-                String json = preferences.getString(String.format("%s", this.app_id), null);
+                String json = preferences.getString(this.app_id, null);
                 if (json != null) {
                     settings = new Gson().fromJson(json, BuddyClientSettings.class);
                 }
@@ -716,9 +716,10 @@ public class BuddyClientImpl implements BuddyClient {
                 int retryCount = 0;
 
                 do {
-                    int retryIntervalInMilliseconds = getRetryInterval(++retryCount);
+                    retryCount += retryCount < 21 ? 1 : 0;
+                    int retryIntervalInMilliseconds = getRetryInterval(retryCount);
 
-                    Log.i("Retry", String.format("Retry interval (milliseconds): %s", retryIntervalInMilliseconds));
+                    Log.i("Retry", String.format("Retry interval (milliseconds): %s, Retry count: %s", retryIntervalInMilliseconds, retryCount));
 
                     try {
                         Thread.sleep(retryIntervalInMilliseconds);
@@ -747,7 +748,7 @@ public class BuddyClientImpl implements BuddyClient {
                 final int retryBaseInMilliseconds = 500;
 
                 return random.nextInt(Math.min(retryCapInMilliseconds, retryBaseInMilliseconds *
-                        (int) Math.pow(2, Math.min(retryCount, 32))));
+                        (int) (Math.pow(2, retryCount) - 1)));
             }
         };
 
