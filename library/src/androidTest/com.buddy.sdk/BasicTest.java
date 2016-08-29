@@ -38,11 +38,11 @@ import java.util.concurrent.Future;
 
 public class BasicTest extends InstrumentationTestCase {
 
-    private static final String AppId = "YOUR_APP_ID";
-    private static final String AppKey = "YOUR_APP_KEY";
+    private static final String AppId = "bbbbbc.dkcbvdjmblPm";
+    private static final String AppKey = "5D7BAACA-6D5C-483D-91DA-BC4AD0450E48";
 
-    private static final String TestUser = "";
-    private static final String TestPassword = "";
+    private static final String TestUser = "pt";
+    private static final String TestPassword = "12341234";
 
     private BuddyClient getClient() {
         return getClient(AppId, AppKey, true);
@@ -170,6 +170,88 @@ public class BasicTest extends InstrumentationTestCase {
             put("title", "Test");
             put("recipients", Lists.newArrayList("testValue"));
         }}, HashMap.class);
+
+    }
+
+
+    public void testGetUsers() throws Exception {
+
+        final BuddyClient client = getClient();
+
+        Map<String,Object> parameters = new HashMap<String, Object>();
+        parameters.put("lastModified", "2016/8/27-2016/8/29");
+
+        Future<BuddyResult<PagedResult>> result = client.<PagedResult>get("/users", parameters, PagedResult.class);
+
+        assertNotNull(result);
+        PagedResult searchResults = result.get().getResult();
+        assertTrue(searchResults.pageResults.size() > 0);
+        List<User> foundUsers = searchResults.convertPageResults(User.class);
+        assertNotNull(foundUsers);
+    }
+
+    public void testGetProfilePic() throws Exception {
+
+        BuddyClient client = getClient();
+
+        Future handle = client.loginUser("testuser--1472408906765", "password", null);
+
+        handle.get();
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+
+        // generate a PNG for upload...
+        Bitmap bitmap = Bitmap.createBitmap(30, 30, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        MyRoundCornerDrawable drawable = new MyRoundCornerDrawable(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] bytes = stream.toByteArray();
+        InputStream is = new ByteArrayInputStream(bytes);
+
+        parameters.put("caption", "From Android");
+        parameters.put("data", new BuddyFile(is, "image/png"));
+        parameters.put("title", "The Title");
+
+        Future<BuddyResult<Picture>> handle2 = client.<Picture>post("/users/me/profilepicture", parameters, Picture.class);
+
+        handle2.get();
+
+        Picture picture = handle2.get().getResult();
+        assertNotNull(handle2.get().getResult());
+        assertEquals("From Android", picture.caption);
+        assertEquals(30, picture.size.h);
+        assertEquals(30, picture.size.w);
+
+        // now get the file.
+        //
+        parameters.clear();
+        Future<BuddyResult<BuddyFile>> handle3 = client.<BuddyFile>get("/users/me/profilepicture/file", null, BuddyFile.class);
+
+        handle3.get();
+
+        assertNotNull(handle3.get());
+
+        BuddyFile file = handle3.get().getResult();
+
+        assertNotNull(file);
+        assertNotNull(file.getStream());
+        assertEquals("image/png", file.getContentType());
+        InputStream fileStream = file.getStream();
+
+        assertEquals(bytes.length, fileStream.available());
+
+        byte[] buffer = new byte[fileStream.available()];
+        fileStream.read(buffer, 0, buffer.length);
+
+        for (int i = 0; i < buffer.length; i++) {
+            if (buffer[i] != bytes[i]) {
+                Assert.fail("Bytes not equal at " + i);
+            }
+        }
 
     }
 
